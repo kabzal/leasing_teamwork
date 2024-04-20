@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link type="text/css" href="{{ url_for('static', filename='css/styles.css')}}" rel="stylesheet" />
+    {% block title %}
+    <title>Про Flask</title>
+    {% endblock %}
+    </head>
+    <body>
+        {% block content %}
+            {% block mainmenu %}
+            <ul class="mainmenu">
+                {% for p in menu %}
+                <li><a href="{{p.url}}">{{p.title}}</a></li>
+                {% endfor %}
+            </ul>
+        {% endblock mainmenu %}
+        {% endblock %}
+        </div>
+    </body>
+</html>
