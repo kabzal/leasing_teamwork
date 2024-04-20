@@ -20,7 +20,7 @@ def profile():
 
 
 # Страница проектов
-@main.route('/projects')
+@main.route('/project')
 def projects():
     # Логика для получения списка проектов
-    return render_template('projects.html', menu=mainmenu)  # Возвращаем шаблон
+    return render_template('project.html', menu=mainmenu)  # Возвращаем шаблон
