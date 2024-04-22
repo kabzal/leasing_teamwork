@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <link type="text/css" href="{{ url_for('static', filename='css/styles.css')}}" rel="stylesheet" />
     {% block title %}
     <title>Про Flask</title>
     {% endblock %}
@@ -14,8 +13,7 @@
                 <li><a href="{{p.url}}">{{p.title}}</a></li>
                 {% endfor %}
             </ul>
-        {% endblock mainmenu %}
+            {% endblock mainmenu %}
         {% endblock %}
-        </div>
     </body>
 </html>

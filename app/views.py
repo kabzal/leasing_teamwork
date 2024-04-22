@@ -3,7 +3,7 @@ from flask import Blueprint, render_template, request, redirect, url_for
 # Создание "синего принта"
 main = Blueprint('main', __name__)
 
-mainmenu = {'title': 'Главная', 'url': '/'}
+mainmenu = [{'title': 'Главная', 'url': '/'}]
 
 
 # Главная страница
