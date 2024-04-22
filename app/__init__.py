@@ -3,7 +3,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 from instance.config import Config
-from .views import main
+from .views import main_bl, auth_bl, admin_bl
 
 engine = create_engine(Config.DB_URI)
 Session = sessionmaker(bind=engine)
@@ -24,7 +24,8 @@ def create_app():
             app.db_session.close()
         return response
 
-    app.register_blueprint(main)
+    app.register_blueprint(main_bl)
+
 
 
     return app

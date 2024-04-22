@@ -5,7 +5,7 @@ main = Blueprint('main', __name__)
 
 mainmenu = [{'title': 'Главная', 'url': '/'}]
 
-
+"""Основные страницы """
 # Главная страница
 @main.route('/')
 def index():
