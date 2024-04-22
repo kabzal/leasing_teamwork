@@ -12,13 +12,6 @@ def index():
     return render_template('index.html', menu=mainmenu)  # Возвращаем шаблон
 
 
-# Страница профиля пользователя
-@main.route('/profile')
-def profile():
-    # Логика для получения информации о пользователе
-    return render_template('user_profile.html', menu=mainmenu)  # Возвращаем шаблон
-
-
 # Страница проектов
 @main.route('/project')
 def projects():
