@@ -1,5 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, BooleanField, PasswordField, SelectField
+from wtforms import StringField, SubmitField, BooleanField, PasswordField, SelectField, TextAreaField
+from wtforms.fields.choices import SelectMultipleField
 from wtforms.validators import DataRequired, Email, Length, EqualTo
 from .models import Department
 
@@ -25,3 +26,18 @@ class RegisterForm(FlaskForm):
     def __init__(self, departments=[], *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.department.choices = [(dept.id, dept.department_name) for dept in departments]
+
+
+class ProjectForm(FlaskForm):
+    project_name = StringField("Название проекта: ", validators=[
+        DataRequired(),
+        Length(min=4, max=100, message="Пароль должен быть от 4 до 100 символов")])
+    project_description = TextAreaField("Описание проекта: ")
+    status = SelectField("Статус: ", validators=[DataRequired()])
+    team = SelectMultipleField("Команда проекта: ")
+    submit = SubmitField("Создать проект")
+
+    def __init__(self, statuses=[], employees=[], *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.status.choices = [(st.id, st.status_name) for st in statuses]
+        self.team.choices = [(employee.id, employee.username) for employee in employees]

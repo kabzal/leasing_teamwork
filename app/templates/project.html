@@ -1,10 +1,31 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 
 {% block title %}
-Project
+{{super()}}
 {% endblock %}
 
 {% block content %}
-<h1>Это проект</h1>
-<p>Самая проектный</p>
+{{ super() }}
+<h1>{{ proj.project_name }}</h1>
+<div>
+    {{ proj.project_description }}
+</div>
+
+<div>
+    {{ proj.proj_st }}
+</div>
+
+<div>
+    <p>Тимлид: </p>
+    {{ proj.team_lead.username }}
+</div>
+
+<div>
+    <p>Команда: </p>
+    <ul>
+        {% for teammate in proj.team %}
+        <li>{{ teammate.username }} - {{ teammate.role }}</li>
+        {% endfor %}
+    </ul>
+</div>
 {% endblock %}

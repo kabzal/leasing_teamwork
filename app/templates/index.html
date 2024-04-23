@@ -8,4 +8,22 @@ Home Page
 {{ super() }}
 <h1>Это главная страница</h1>
 <p>Самая главная</p>
+
+<h2>Ваши проекты</h2>
+        <ul>
+            {% for project in projects %}
+                <li>
+                    <a href="/project/{{project.id}}">{{ project.project_name }}</a>
+                    <p>{{ project.project_description }}
+                    {% for u in project.team %}
+                        <p>{{ u.username }}</p>
+                    {% endfor %}
+                </li>
+            {% endfor %}
+        </ul>
+<p>
+    <a href="{{ url_for('main.create_project') }}">Создать новый проект</a>
+</p>
+
+
 {% endblock %}
