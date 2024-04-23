@@ -73,9 +73,10 @@ def register():
     return render_template("auth/register.html", title="Регистрация", form=form)
 
 
-@auth.route('/profile')
+@auth.route('/profile/<int:user_id>')
 @login_required
-def profile():
-    return render_template('auth/user_profile.html', title="Профиль пользователя")
+def profile(user_id):
+    user_chosen = app.db_session.query(User).filter(User.id == user_id).first()
+    return render_template('auth/user_profile.html', title=f"Профиль пользователя {user_chosen.username}", user=user_chosen)
 
 

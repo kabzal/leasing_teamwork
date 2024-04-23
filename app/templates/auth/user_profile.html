@@ -1,10 +1,15 @@
 {% extends 'base.html' %}
 
 {% block title %}
-Профиль
+{{super()}}
 {% endblock %}
 
 {% block content %}
-<h1>Это профиль</h1>
-<p>Самая профильный</p>
+<h1>{{ title }}</h1>
+<p>Должность: {{ user.role }}</p>
+<p>Отдел: {{ user.department }}</p>
+<p>Email: {{ user.email }}</p>
+{% for p in user.projects_participated %}
+    <p>{{ p.project_name }}</p>
+{% endfor %}
 {% endblock %}
