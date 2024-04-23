@@ -28,4 +28,13 @@
         {% endfor %}
     </ul>
 </div>
+
+<div>
+    <p>Задачи: </p>
+    <ul>
+        {% for task in tasks %}
+        <li>{{ task.task_title }} - {{ task.executor.username }} - {{ task.status }} - {{ task.deadline }}</li>
+        {% endfor %}
+    </ul>
+</div>
 {% endblock %}

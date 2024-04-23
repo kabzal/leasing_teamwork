@@ -12,4 +12,7 @@
 {% for p in user.projects_participated %}
     <p>{{ p.project_name }}</p>
 {% endfor %}
+{% for t in user.tasks_assigned %}
+    <p>{{ t.task_title }}</p>
+{% endfor %}
 {% endblock %}
