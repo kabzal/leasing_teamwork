@@ -83,7 +83,8 @@ def project(project_id: int):
 
     return render_template('project.html',
                            title=project_chosen.project_name,
-                           proj=project_chosen)
+                           proj=project_chosen,
+                           menu=mainmenu)
 
 
 @login_required
@@ -127,5 +128,6 @@ def task(project_id, task_id):
     return render_template('task.html',
                            title=f"Задача: {task_chosen.task_title}",
                            task=task_chosen,
-                           project_id=project_id)
+                           project_id=project_id,
+                           menu=mainmenu)
 

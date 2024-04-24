@@ -9,6 +9,8 @@ auth = Blueprint('auth', __name__)
 
 app = None
 
+mainmenu = [{'title': 'Главная', 'url': '/'},
+            {'title': 'Выйти из профиля', 'url': '/logout'}]
 
 @auth.before_request
 def before_request():
@@ -79,6 +81,7 @@ def profile(user_id):
     user_chosen = app.db_session.query(User).filter(User.id == user_id).first()
     return render_template('auth/user_profile.html',
                            title=f"Профиль пользователя {user_chosen.username}",
-                           user=user_chosen)
+                           user=user_chosen,
+                           menu=mainmenu)
 
 
