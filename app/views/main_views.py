@@ -23,10 +23,14 @@ def teardown_request(request):
     app = None
     return request
 
+
 mainmenu = [{'title': 'Главная', 'url': '/'},
             {'title': 'Выйти из профиля', 'url': '/logout'}]
 
+
 """Основные страницы """
+
+
 # Главная страница
 @login_required
 @main.route('/')
@@ -76,14 +80,10 @@ def create_project():
 @main.route('/project/<int:project_id>')
 def project(project_id: int):
     project_chosen = app.db_session.query(Project).filter(Project.id == project_id).first()
-    st = app.db_session.query(Status).filter(Status.id == project_chosen.status).first()
-    tasks = app.db_session.query(Task).filter(Task.project_id == project_id).all()
 
     return render_template('project.html',
                            title=project_chosen.project_name,
-                           proj=project_chosen,
-                           proj_st=st,
-                           tasks=tasks)
+                           proj=project_chosen)
 
 
 @login_required
@@ -123,11 +123,9 @@ def add_task(project_id: int):
 @main.route('/project/<int:project_id>/task/<int:task_id>')
 def task(project_id, task_id):
     task_chosen = app.db_session.query(Task).filter(Task.id == task_id).first()
-    st = app.db_session.query(Status).filter(Status.id == task_chosen.status).first()
 
     return render_template('task.html',
                            title=f"Задача: {task_chosen.task_title}",
                            task=task_chosen,
-                           st=st,
                            project_id=project_id)
 

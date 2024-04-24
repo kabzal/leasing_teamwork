@@ -26,7 +26,7 @@ def teardown_request(request):
 @auth.route("/login", methods=["POST", "GET"])
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for('auth.profile'))
+        return redirect(url_for('auth.profile', user_id=current_user.id))
 
     form = LoginForm()
     if form.validate_on_submit():

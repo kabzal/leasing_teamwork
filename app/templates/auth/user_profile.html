@@ -7,7 +7,7 @@
 {% block content %}
 <h1>{{ title }}</h1>
 <p>Должность: {{ user.role }}</p>
-<p>Отдел: {{ user.department }}</p>
+<p>Отдел: {{ user.department.department_name }}</p>
 <p>Email: {{ user.email }}</p>
 <ul>
     Проекты:

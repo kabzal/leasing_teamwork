@@ -14,8 +14,10 @@ class User(Base, UserMixin):
     email = Column(String(50), unique=True, nullable=False)
     password = Column(String(500), unique=True, nullable=False)
     role = Column(String(100), default="Роль не определена")
-    department = Column(Integer, ForeignKey('departments.id'))
     avatar = Column(String(100), default='static/default_avatar.png')
+
+    department_id = Column(Integer, ForeignKey('departments.id'))
+    department = relationship('Department', backref='dept', foreign_keys=[department_id])
 
 
 class Department(Base):
@@ -35,10 +37,13 @@ class Project(Base):
     id = Column(Integer, primary_key=True)
     project_name = Column(String(500), nullable=False)
     project_description = Column(Text, nullable=False)
-    status = Column(Integer, ForeignKey('statuses.id'))
+
+    status_id = Column(Integer, ForeignKey('statuses.id'))
+    status = relationship('Status', backref='statused_projects', foreign_keys=[status_id])
 
     team_lead_id = Column(Integer, ForeignKey('users.id'))
     team_lead = relationship('User', backref='projects_lead', foreign_keys=[team_lead_id])
+
     team = relationship('User', secondary='project_members', backref='projects_participated')
 
 
@@ -53,9 +58,13 @@ class Task(Base):
     id = Column(Integer, primary_key=True)
     task_title = Column(String(200), nullable=False)
     task_description = Column(Text)
-    status = Column(Integer, ForeignKey('statuses.id'))
     deadline = Column(DateTime, nullable=False)
 
+    status_id = Column(Integer, ForeignKey('statuses.id'))
+    status = relationship('Status', backref='statused_tasks', foreign_keys=[status_id])
+
     project_id = Column(Integer, ForeignKey('projects.id'))
+    project = relationship('Project', backref='project_tasks', foreign_keys=[project_id])
+
     executor_id = Column(Integer, ForeignKey('users.id'))
     executor = relationship('User', backref='tasks_assigned', foreign_keys=[executor_id])

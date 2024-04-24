@@ -12,7 +12,7 @@
 </div>
 
 <div>
-    {{ proj_st.status_name }}
+    {{ proj.status.status_name }}
 </div>
 
 <div>
@@ -34,12 +34,12 @@
 
 <div>
     <p>Задачи: </p>
-    {% if tasks %}
+    {% if proj.project_tasks %}
     <ul>
-        {% for task in tasks %}
+        {% for task in proj.project_tasks %}
         <li>
             <a href="{{ url_for('main.task', project_id=proj.id, task_id=task.id) }}">
-                {{ task.task_title }} - {{ task.executor.username }} - {{ task.status }} - {{ task.deadline }}
+                {{ task.task_title }} - {{ task.executor.username }} - {{ task.status.status_name }} - {{ task.deadline }}
             </a>
         </li>
         {% endfor %}
