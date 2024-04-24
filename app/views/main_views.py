@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, current_app, flash
 from flask_login import current_user, login_required
 
-from app.forms import ProjectForm, TaskForm
+from app.forms import ProjectForm, TaskForm, ProjectEditForm
 from app.models import Status, User, Project, Task
 
 # Создание "синего принта"
@@ -60,7 +60,7 @@ def create_project():
             new_project = Project(
                 project_name=form.project_name.data,
                 project_description=form.project_description.data,
-                status=form.status.data,
+                status_id=form.status.data,
                 team=selected_team,
                 team_lead_id=current_user.id
             )
@@ -88,6 +88,58 @@ def project(project_id: int):
 
 
 @login_required
+@main.route('/project/<int:project_id>/edit', methods=["POST", "GET"])
+def edit_project(project_id):
+    project_chosen = app.db_session.query(Project).filter(Project.id == project_id).first()
+
+    if not project_chosen:
+        flash("Проект не найден", "error")
+        return redirect(url_for("main.index"))
+
+    if current_user.id != project_chosen.team_lead_id:
+        flash("Только тимлид имеет права редактировать этот проект", "error")
+        return redirect(url_for('main.project', project_id=project_id))
+
+    statuses = app.db_session.query(Status).all()
+    employees = app.db_session.query(User).all()
+    form = ProjectEditForm(statuses=statuses, employees=employees)
+
+    if request.method == "GET":
+        form.project_name.data = project_chosen.project_name
+        form.project_description.data = project_chosen.project_description
+        form.team.default = [(member.id, member.username) for member in project_chosen.team]
+
+    if form.validate_on_submit():
+        try:
+            project_chosen.project_name = form.project_name.data
+            project_chosen.project_description = form.project_description.data
+
+            if form.status.data != '0':
+                project_chosen.status_id = form.status.data
+
+            if form.team.data:
+                project_chosen.team = [app.db_session.query(User).filter(User.id == user_id).first() for user_id in form.team.data]
+
+            if form.team_lead.data != '0':
+                chosen_team_lead = app.db_session.query(User).filter(User.id == form.team_lead.data).first()
+                if not chosen_team_lead in project_chosen.team:
+                    project_chosen.team.append(chosen_team_lead)
+                project_chosen.team_lead_id = form.team_lead.data
+
+            app.db_session.commit()
+            flash("Проект успешно обновлен", "success")
+            return redirect(url_for('main.project', project_id=project_id))
+        except Exception as e:
+            app.db_session.rollback()
+            flash(f"Ошибка при обновлении проекта: {e}", "error")
+
+    return render_template('edit_project.html',
+                           form=form,
+                           proj=project_chosen,
+                           menu=mainmenu)
+
+
+@login_required
 @main.route('/project/<int:project_id>/add_task', methods=["POST", "GET"])
 def add_task(project_id: int):
     statuses = app.db_session.query(Status).all()
@@ -100,7 +152,7 @@ def add_task(project_id: int):
             new_task = Task(
                 task_title=form.task_title.data,
                 task_description=form.task_description.data,
-                status=form.status.data,
+                status_id=form.status.data,
                 deadline=form.deadline.data,
                 project_id=project_id,
                 executor_id=form.executor.data

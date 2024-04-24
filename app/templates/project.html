@@ -6,7 +6,11 @@
 
 {% block content %}
 {{ super() }}
+{% for cat, msg in get_flashed_messages(True) %}
+<div class="flash {{cat}}">{{msg}}</div>
+{% endfor %}
 <h1>{{ proj.project_name }}</h1>
+<p><a href="{{ url_for('main.edit_project', project_id=proj.id) }}">Редактировать проект</a></p>
 <div>
     {{ proj.project_description }}
 </div>

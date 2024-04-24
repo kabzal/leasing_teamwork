@@ -43,6 +43,23 @@ class ProjectForm(FlaskForm):
         self.team.choices = [(employee.id, employee.username) for employee in employees]
 
 
+class ProjectEditForm(FlaskForm):
+    project_name = StringField("Название проекта: ", validators=[
+        DataRequired(),
+        Length(min=4, max=100, message="Название должно быть от 4 до 100 символов")])
+    project_description = TextAreaField("Описание проекта: ")
+    status = SelectField("Статус: ", validators=[DataRequired()])
+    team_lead = SelectField("Тимлид: ", validators=[DataRequired()])
+    team = SelectMultipleField("Команда проекта: ")
+    submit = SubmitField("Сохранить изменения")
+
+    def __init__(self, statuses=[], employees=[], team=[], *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.status.choices = [(0, "Оставить без изменений")] + [(st.id, st.status_name) for st in statuses]
+        self.team.choices = [(employee.id, employee.username) for employee in employees]
+        self.team_lead.choices = [(0, "Оставить без изменений")] + [(employee.id, employee.username) for employee in employees]
+
+
 class TaskForm(FlaskForm):
     task_title = StringField("Заголовок: ", validators=[
         DataRequired(),
