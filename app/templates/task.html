@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}
+{{super()}}
+{% endblock %}
+
+{% block content %}
+{{ super() }}
+<h1>{{ title }}</h1>
+<div>
+    {{ task.task_description }}
+</div>
+
+<div>
+    {{ st.status_name }}
+</div>
+
+<div>
+    <p>Исполнитель: </p>
+    {{ task.executor.username }}
+    {{ task.executor.role }}
+</div>
+
+<div>
+    <p>Дедлайн: {{ task.deadline }}</p>
+
+</div>
+
+<div>
+    <p><a href="{{ url_for('main.project', project_id=project_id) }}">Назад к проекту</a></p>
+</div>
+{% endblock %}

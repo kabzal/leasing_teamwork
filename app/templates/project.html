@@ -12,29 +12,46 @@
 </div>
 
 <div>
-    {{ proj.proj_st }}
+    {{ proj_st.status_name }}
 </div>
 
 <div>
-    <p>Тимлид: </p>
-    {{ proj.team_lead.username }}
+    <p>
+        Тимлид: <a href="{{ url_for('auth.profile', user_id=proj.team_lead_id) }}">
+            {{ proj.team_lead.username }}
+        </a>, {{ proj.team_lead.role }}
+    </p>
 </div>
 
 <div>
     <p>Команда: </p>
     <ul>
         {% for teammate in proj.team %}
-        <li>{{ teammate.username }} - {{ teammate.role }}</li>
+        <li><a href="{{ url_for('auth.profile', user_id=teammate.id) }}">{{ teammate.username }} - {{ teammate.role }}</a></li>
         {% endfor %}
     </ul>
 </div>
 
 <div>
     <p>Задачи: </p>
+    {% if tasks %}
     <ul>
         {% for task in tasks %}
-        <li>{{ task.task_title }} - {{ task.executor.username }} - {{ task.status }} - {{ task.deadline }}</li>
+        <li>
+            <a href="{{ url_for('main.task', project_id=proj.id, task_id=task.id) }}">
+                {{ task.task_title }} - {{ task.executor.username }} - {{ task.status }} - {{ task.deadline }}
+            </a>
+        </li>
         {% endfor %}
     </ul>
+    {% else %}
+    В настоящее время задачи не добавлены
+    {% endif %}
+</div>
+
+<div>
+    <a href="{{ url_for('main.add_task', project_id=proj.id) }}">
+        Добавить задачу
+    </a>
 </div>
 {% endblock %}

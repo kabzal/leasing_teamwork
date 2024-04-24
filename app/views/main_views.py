@@ -23,7 +23,8 @@ def teardown_request(request):
     app = None
     return request
 
-mainmenu = [{'title': 'Главная', 'url': '/'}]
+mainmenu = [{'title': 'Главная', 'url': '/'},
+            {'title': 'Выйти из профиля', 'url': '/logout'}]
 
 """Основные страницы """
 # Главная страница
@@ -70,6 +71,7 @@ def create_project():
 
     return render_template('create_project.html', title="Создание нового проекта", menu=mainmenu, form=form)
 
+
 @login_required
 @main.route('/project/<int:project_id>')
 def project(project_id: int):
@@ -111,5 +113,21 @@ def add_task(project_id: int):
             flash("Ошибка при добавлении задачи в БД", "error")
             print(str(e))
 
-    return render_template('add_task.html', title="Создание новой задачи", menu=mainmenu, form=form)
+    return render_template('add_task.html',
+                           title="Создание новой задачи",
+                           menu=mainmenu,
+                           form=form)
+
+
+@login_required
+@main.route('/project/<int:project_id>/task/<int:task_id>')
+def task(project_id, task_id):
+    task_chosen = app.db_session.query(Task).filter(Task.id == task_id).first()
+    st = app.db_session.query(Status).filter(Status.id == task_chosen.status).first()
+
+    return render_template('task.html',
+                           title=f"Задача: {task_chosen.task_title}",
+                           task=task_chosen,
+                           st=st,
+                           project_id=project_id)
 

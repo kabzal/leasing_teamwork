@@ -34,7 +34,7 @@ def login():
         if user and check_password_hash(user.password, form.password.data):
             rm = form.remember.data
             login_user(user, remember=rm)
-            return redirect(request.args.get("next") or url_for("auth.profile"))
+            return redirect(request.args.get("next") or url_for("auth.profile", user_id=user.id))
 
         flash("Неверно введен логин или пароль", "error")
     return render_template('auth/login.html', title="Авторизация", form=form)
@@ -77,6 +77,8 @@ def register():
 @login_required
 def profile(user_id):
     user_chosen = app.db_session.query(User).filter(User.id == user_id).first()
-    return render_template('auth/user_profile.html', title=f"Профиль пользователя {user_chosen.username}", user=user_chosen)
+    return render_template('auth/user_profile.html',
+                           title=f"Профиль пользователя {user_chosen.username}",
+                           user=user_chosen)
 
 

@@ -9,10 +9,26 @@
 <p>Должность: {{ user.role }}</p>
 <p>Отдел: {{ user.department }}</p>
 <p>Email: {{ user.email }}</p>
-{% for p in user.projects_participated %}
-    <p>{{ p.project_name }}</p>
-{% endfor %}
-{% for t in user.tasks_assigned %}
-    <p>{{ t.task_title }}</p>
-{% endfor %}
+<ul>
+    Проекты:
+    {% for p in user.projects_participated %}
+        <li>
+            <a href="{{ url_for('main.project', project_id=p.id) }}">
+                {{ p.project_name }}
+            </a>
+        </li>
+    {% endfor %}
+</ul>
+<ul>
+    Активные задачи:
+    {% for t in user.tasks_assigned %}
+        {% if t.status == 1 %}
+            <li>
+                <a href="{{ url_for('main.task', project_id=t.project_id, task_id=t.id) }}">
+                    {{ t.task_title }} - {{ t.deadline }} ({{ t.project_id }})
+                </a>
+            </li>
+        {% endif %}
+    {% endfor %}
+</ul>
 {% endblock %}
