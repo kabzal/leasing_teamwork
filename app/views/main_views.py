@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, current_app, flash
 from flask_login import current_user, login_required
 
-from app.forms import ProjectForm, TaskForm, ProjectEditForm
+from app.forms import ProjectForm, TaskForm, ProjectEditForm, TaskEditForm
 from app.models import Status, User, Project, Task
 
 # Создание "синего принта"
@@ -107,7 +107,6 @@ def edit_project(project_id):
     if request.method == "GET":
         form.project_name.data = project_chosen.project_name
         form.project_description.data = project_chosen.project_description
-        form.team.default = [(member.id, member.username) for member in project_chosen.team]
 
     if form.validate_on_submit():
         try:
@@ -183,3 +182,57 @@ def task(project_id, task_id):
                            project_id=project_id,
                            menu=mainmenu)
 
+
+@login_required
+@main.route('/project/<int:project_id>/task/<int:task_id>/edit', methods=["POST", "GET"])
+def edit_task(project_id, task_id):
+    task_chosen = app.db_session.query(Task).filter(Task.id == task_id).first()
+    print(task_chosen)
+
+    if not task_chosen:
+        flash("Задача не найдена", "error")
+        return redirect(url_for("main.project", project_id=project_id))
+
+    if task_chosen.project.id != project_id:
+        flash("Неверный запрос задачи", "error")
+        return redirect(url_for("main.index"))
+
+    if current_user.id != task_chosen.project.team_lead_id and current_user.id != task_chosen.executor:
+        flash("Только тимлид или исполнитель имеет право редактировать эту задачу", "error")
+        return redirect(url_for('main.project', project_id=project_id))
+
+    statuses = app.db_session.query(Status).all()
+    employees = app.db_session.query(User).all()
+    form = TaskEditForm(statuses=statuses, employees=employees)
+
+    if request.method == "GET":
+        form.task_title.data = task_chosen.task_title
+        form.task_description.data = task_chosen.task_description
+        form.deadline.data = task_chosen.deadline
+
+    if form.validate_on_submit():
+        try:
+            task_chosen.task_title = form.task_title.data
+            task_chosen.task_description = form.task_description.data
+
+            if form.status.data != '0':
+                task_chosen.status_id = form.status.data
+
+            if form.deadline.data:
+                task_chosen.deadline = form.deadline.data
+
+            if form.executor.data != '0':
+                task_chosen.executor = form.executor.data
+
+            app.db_session.commit()
+            flash("Задача успешно обновлена", "success")
+            return redirect(url_for('main.task', project_id=project_id, task_id=task_id))
+        except Exception as e:
+            app.db_session.rollback()
+            print(f"Ошибка при обновлении задачи: {e}")
+            flash(f"Ошибка при обновлении задачи: {e}", "error")
+
+    return render_template('edit_task.html',
+                           form=form,
+                           task=task_chosen,
+                           menu=mainmenu)

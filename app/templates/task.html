@@ -7,6 +7,17 @@
 {% block content %}
 {{ super() }}
 <h1>{{ title }}</h1>
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+  <div class="alert alert-info">
+    {% for message in messages %}
+    {{ message }}
+    {% endfor %}
+  </div>
+  {% endif %}
+  {% endwith %}
+
+<p><a href="{{ url_for('main.edit_task', project_id=task.project.id, task_id=task.id) }}">Редактировать задачу</a></p>
 <div>
     {{ task.task_description }}
 </div>
@@ -16,9 +27,10 @@
 </div>
 
 <div>
-    <p>Исполнитель: </p>
-    {{ task.executor.username }}
+    <p>Исполнитель:
+    <a href="{{ url_for('auth.profile', user_id=task.executor.id) }}">{{ task.executor.username }}</a>
     {{ task.executor.role }}
+    </p>
 </div>
 
 <div>

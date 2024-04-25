@@ -74,3 +74,19 @@ class TaskForm(FlaskForm):
         super().__init__(*args, **kwargs)
         self.status.choices = [(st.id, st.status_name) for st in statuses]
         self.executor.choices = [(employee.id, employee.username) for employee in employees]
+
+
+class TaskEditForm(FlaskForm):
+    task_title = StringField("Заголовок: ", validators=[
+        DataRequired(),
+        Length(min=4, max=200, message="Название должно быть от 4 до 100 символов")])
+    task_description = TextAreaField("Описание задания: ", validators=[DataRequired()])
+    status = SelectField("Статус: ")
+    deadline = DateField("Срок исполнения: ", default=None)
+    executor = SelectField("Исполнитель: ")
+    submit = SubmitField("Сохранить изменения")
+
+    def __init__(self, statuses=[], employees=[], *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.status.choices = [(0, "Оставить без изменений")] + [(st.id, st.status_name) for st in statuses]
+        self.executor.choices = [(0, "Оставить без изменений")] + [(employee.id, employee.username) for employee in employees]

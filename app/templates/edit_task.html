@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Редактировать задачу: {{ task.task_title }}</h1>
+
+  {% with messages = get_flashed_messages() %}
+  {% if messages %}
+  <div class="alert alert-info">
+    {% for message in messages %}
+    {{ message }}
+    {% endfor %}
+  </div>
+  {% endif %}
+  {% endwith %}
+
+<form method="POST">
+    {{ form.hidden_tag() }}
+    <div>
+        {{ form.task_title.label }}
+        {{ form.task_title() }}
+    </div>
+    <div>
+        {{ form.task_description.label }}
+        {{ form.task_description() }}
+    </div>
+    <div>
+        {{ form.status.label }}
+        {{ form.status() }}
+    </div>
+    <div>
+        {{ form.deadline.label }}
+        {{ form.deadline() }}
+    </div>
+    <div>
+        {{ form.executor.label }}
+        {{ form.executor() }}
+    </div>
+    <div>
+        {{ form.submit() }}
+    </div>
+</form>
+
+<p><a href="{{ url_for('main.task', project_id=task.project.id, task_id=task.id) }}">Назад к задаче</a></p>
+{% endblock %}
