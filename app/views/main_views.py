@@ -38,7 +38,7 @@ mainmenu = [{'title': 'Главная', 'url': '/'},
 def index():
     if current_user.is_authenticated:
         projects = current_user.projects_participated
-        is_admin = (current_user.username == Config.ADMIN_USERNAME)
+        is_admin = (current_user.username == Config.ADMIN_EMAIL)
         return render_template("index.html",
                                projects=projects,
                                menu=mainmenu,
@@ -51,7 +51,7 @@ def index():
 @login_required
 @main.route('/create_project', methods=["POST", "GET"])
 def create_project():
-    is_admin = (current_user.username == Config.ADMIN_USERNAME)
+    is_admin = (current_user.username == Config.ADMIN_EMAIL)
     statuses = app.db_session.query(Status).all()
     employees = app.db_session.query(User).all()
 
@@ -90,7 +90,7 @@ def create_project():
 @main.route('/project/<int:project_id>')
 def project(project_id: int):
     project_chosen = app.db_session.query(Project).filter(Project.id == project_id).first()
-    is_admin = (current_user.username == Config.ADMIN_USERNAME)
+    is_admin = (current_user.username == Config.ADMIN_EMAIL)
 
     return render_template('project.html',
                            title=project_chosen.project_name,
@@ -102,7 +102,7 @@ def project(project_id: int):
 @login_required
 @main.route('/project/<int:project_id>/edit', methods=["POST", "GET"])
 def edit_project(project_id):
-    is_admin = (current_user.username == Config.ADMIN_USERNAME)
+    is_admin = (current_user.username == Config.ADMIN_EMAIL)
     project_chosen = app.db_session.query(Project).filter(Project.id == project_id).first()
 
     if not project_chosen:
@@ -155,7 +155,7 @@ def edit_project(project_id):
 @login_required
 @main.route('/project/<int:project_id>/add_task', methods=["POST", "GET"])
 def add_task(project_id: int):
-    is_admin = (current_user.username == Config.ADMIN_USERNAME)
+    is_admin = (current_user.username == Config.ADMIN_EMAIL)
     statuses = app.db_session.query(Status).all()
     employees = app.db_session.query(User).all()
 
@@ -190,7 +190,7 @@ def add_task(project_id: int):
 @login_required
 @main.route('/project/<int:project_id>/task/<int:task_id>')
 def task(project_id, task_id):
-    is_admin = (current_user.username == Config.ADMIN_USERNAME)
+    is_admin = (current_user.username == Config.ADMIN_EMAIL)
     task_chosen = app.db_session.query(Task).filter(Task.id == task_id).first()
 
     return render_template('task.html',
@@ -204,7 +204,7 @@ def task(project_id, task_id):
 @login_required
 @main.route('/project/<int:project_id>/task/<int:task_id>/edit', methods=["POST", "GET"])
 def edit_task(project_id, task_id):
-    is_admin = (current_user.username == Config.ADMIN_USERNAME)
+    is_admin = (current_user.username == Config.ADMIN_EMAIL)
     task_chosen = app.db_session.query(Task).filter(Task.id == task_id).first()
 
     if not task_chosen:

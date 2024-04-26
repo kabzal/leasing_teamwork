@@ -29,7 +29,7 @@ def teardown_request(request):
 @login_required
 @admin.route("/create_user", methods=["POST", "GET"])
 def create_user():
-    if current_user.username != Config.ADMIN_USERNAME:
+    if current_user.username != Config.ADMIN_EMAIL:
         flash("Создавать новых пользователей имеет право только администратор", "error")
         return redirect(url_for("main.index"))
 
@@ -59,7 +59,7 @@ def create_user():
 @login_required
 @admin.route('/edit_user/<int:user_id>', methods=["POST", "GET"])
 def edit_user(user_id: int):
-    is_admin = (current_user.username == Config.ADMIN_USERNAME)
+    is_admin = (current_user.username == Config.ADMIN_EMAIL)
 
     if not is_admin:
         flash("Вносить изменения в данные о пользователях имеет право только администратор", "error")
