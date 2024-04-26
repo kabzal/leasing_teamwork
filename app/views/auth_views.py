@@ -54,7 +54,7 @@ def logout():
 @auth.route('/profile/<int:user_id>')
 @login_required
 def profile(user_id):
-    is_admin = (current_user.username == Config.ADMIN_EMAIL)
+    is_admin = (current_user.email == Config.ADMIN_EMAIL)
     user_chosen = app.db_session.query(User).filter(User.id == user_id).first()
     return render_template('auth/user_profile.html',
                            title=f"Профиль пользователя {user_chosen.username}",

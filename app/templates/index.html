@@ -15,9 +15,11 @@ Home Page
                 <li>
                     <a href="/project/{{project.id}}">{{ project.project_name }}</a>
                     <p>{{ project.project_description }}
-                    {% for u in project.team %}
-                        <p>{{ u.username }}</p>
-                    {% endfor %}
+                    <ul>
+                        {% for u in project.team %}
+                            <li>{{ u.username }}</li>
+                        {% endfor %}
+                    </ul>
                 </li>
             {% endfor %}
         </ul>
@@ -25,5 +27,21 @@ Home Page
     <a href="{{ url_for('main.create_project') }}">Создать новый проект</a>
 </p>
 
+{% if is_admin %}
+<h2>Все проекты</h2>
+    <ul>
+        {% for pr in all_projects %}
+            <li>
+                <a href="/project/{{pr.id}}">{{ pr.project_name }}</a>
+                <p>{{ pr.project_description }}</p>
+                <ul>
+                    {% for u in pr.team %}
+                        <li>{{ u.username }}</li>
+                    {% endfor %}
+                </ul>
+            </li>
+        {% endfor %}
+    </ul>
+{% endif %}
 
 {% endblock %}

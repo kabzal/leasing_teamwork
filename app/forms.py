@@ -33,12 +33,11 @@ class UserEditForm(FlaskForm):
     email = StringField("Email: ", validators=[Email("Некорректный email"), ])
     role = StringField("Должность/роль: ", validators=[Length(min=4, max=100, message="Роль должна быть от 4 до 100 символов")])
     department = SelectField("Отдел: ", validators=[DataRequired()])
-    submit = SubmitField("Регистрация")
+    submit = SubmitField("Сохранить изменения")
 
     def __init__(self, departments=[], *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.department.choices = [(0, "Оставить без изменений")] + [(dept.id, dept.department_name) for dept in departments]
-
 
 
 class ProjectForm(FlaskForm):

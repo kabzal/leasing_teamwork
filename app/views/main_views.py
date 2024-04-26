@@ -38,11 +38,16 @@ mainmenu = [{'title': 'Главная', 'url': '/'},
 def index():
     if current_user.is_authenticated:
         projects = current_user.projects_participated
-        is_admin = (current_user.username == Config.ADMIN_EMAIL)
+        is_admin = (current_user.email == Config.ADMIN_EMAIL)
+        if is_admin:
+            all_projects = app.db_session.query(Project).all()
+        else:
+            all_projects = None
         return render_template("index.html",
                                projects=projects,
                                menu=mainmenu,
-                               is_admin=is_admin)
+                               is_admin=is_admin,
+                               all_projects=all_projects)
     else:
         return redirect(url_for("auth.login"))
 
@@ -51,7 +56,7 @@ def index():
 @login_required
 @main.route('/create_project', methods=["POST", "GET"])
 def create_project():
-    is_admin = (current_user.username == Config.ADMIN_EMAIL)
+    is_admin = (current_user.email == Config.ADMIN_EMAIL)
     statuses = app.db_session.query(Status).all()
     employees = app.db_session.query(User).all()
 
@@ -90,7 +95,7 @@ def create_project():
 @main.route('/project/<int:project_id>')
 def project(project_id: int):
     project_chosen = app.db_session.query(Project).filter(Project.id == project_id).first()
-    is_admin = (current_user.username == Config.ADMIN_EMAIL)
+    is_admin = (current_user.email == Config.ADMIN_EMAIL)
 
     return render_template('project.html',
                            title=project_chosen.project_name,
@@ -102,15 +107,15 @@ def project(project_id: int):
 @login_required
 @main.route('/project/<int:project_id>/edit', methods=["POST", "GET"])
 def edit_project(project_id):
-    is_admin = (current_user.username == Config.ADMIN_EMAIL)
+    is_admin = (current_user.email == Config.ADMIN_EMAIL)
     project_chosen = app.db_session.query(Project).filter(Project.id == project_id).first()
 
     if not project_chosen:
         flash("Проект не найден", "error")
         return redirect(url_for("main.index"))
 
-    if current_user.id != project_chosen.team_lead_id:
-        flash("Только тимлид имеет права редактировать этот проект", "error")
+    if current_user.id != project_chosen.team_lead_id and not is_admin:
+        flash(f"Только тимлид {project_chosen.team_lead.username} и администратор сайта могут редактировать этот проект", "error")
         return redirect(url_for('main.project', project_id=project_id))
 
     statuses = app.db_session.query(Status).all()
@@ -155,9 +160,10 @@ def edit_project(project_id):
 @login_required
 @main.route('/project/<int:project_id>/add_task', methods=["POST", "GET"])
 def add_task(project_id: int):
-    is_admin = (current_user.username == Config.ADMIN_EMAIL)
+    is_admin = (current_user.email == Config.ADMIN_EMAIL)
+    project_chosen = app.db_session.query(Project).filter(Project.id == project_id).first()
     statuses = app.db_session.query(Status).all()
-    employees = app.db_session.query(User).all()
+    employees = project_chosen.team
 
     form = TaskForm(statuses=statuses, employees=employees)
 
@@ -190,7 +196,7 @@ def add_task(project_id: int):
 @login_required
 @main.route('/project/<int:project_id>/task/<int:task_id>')
 def task(project_id, task_id):
-    is_admin = (current_user.username == Config.ADMIN_EMAIL)
+    is_admin = (current_user.email == Config.ADMIN_EMAIL)
     task_chosen = app.db_session.query(Task).filter(Task.id == task_id).first()
 
     return render_template('task.html',
@@ -204,7 +210,7 @@ def task(project_id, task_id):
 @login_required
 @main.route('/project/<int:project_id>/task/<int:task_id>/edit', methods=["POST", "GET"])
 def edit_task(project_id, task_id):
-    is_admin = (current_user.username == Config.ADMIN_EMAIL)
+    is_admin = (current_user.email == Config.ADMIN_EMAIL)
     task_chosen = app.db_session.query(Task).filter(Task.id == task_id).first()
 
     if not task_chosen:
@@ -215,12 +221,12 @@ def edit_task(project_id, task_id):
         flash("Неверный запрос задачи", "error")
         return redirect(url_for("main.index"))
 
-    if current_user.id != task_chosen.project.team_lead_id and current_user.id != task_chosen.executor:
-        flash("Только тимлид или исполнитель имеет право редактировать эту задачу", "error")
+    if current_user.id != task_chosen.project.team_lead_id and current_user.id != task_chosen.executor and not is_admin:
+        flash(f"Редактировать эту задачу могут только тимлид {task_chosen.project.team_lead.username}, исполнитель {task_chosen.executor.username} и администратор сайта", "error")
         return redirect(url_for('main.project', project_id=project_id))
 
     statuses = app.db_session.query(Status).all()
-    employees = app.db_session.query(User).all()
+    employees = task_chosen.project.team
     form = TaskEditForm(statuses=statuses, employees=employees)
 
     if request.method == "GET":
