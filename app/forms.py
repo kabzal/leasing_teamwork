@@ -28,6 +28,19 @@ class RegisterForm(FlaskForm):
         self.department.choices = [(dept.id, dept.department_name) for dept in departments]
 
 
+class UserEditForm(FlaskForm):
+    username = StringField("Имя: ", validators=[Length(min=4, max=100, message="Имя должно быть от 4 до 100 символов")])
+    email = StringField("Email: ", validators=[Email("Некорректный email"), ])
+    role = StringField("Должность/роль: ", validators=[Length(min=4, max=100, message="Роль должна быть от 4 до 100 символов")])
+    department = SelectField("Отдел: ", validators=[DataRequired()])
+    submit = SubmitField("Регистрация")
+
+    def __init__(self, departments=[], *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.department.choices = [(0, "Оставить без изменений")] + [(dept.id, dept.department_name) for dept in departments]
+
+
+
 class ProjectForm(FlaskForm):
     project_name = StringField("Название проекта: ", validators=[
         DataRequired(),

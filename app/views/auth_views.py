@@ -4,6 +4,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 from app.models import User, Department
 from app.forms import LoginForm, RegisterForm
+from config import Config
 
 auth = Blueprint('auth', __name__)
 
@@ -50,38 +51,15 @@ def logout():
     return redirect(url_for('auth.login'))
 
 
-@auth.route("/register", methods=["POST", "GET"])
-def register():
-    departments = app.db_session.query(Department).all()
-    form = RegisterForm(departments=departments)
-    if form.validate_on_submit():
-        hash = generate_password_hash(form.password.data)
-        try:
-            new_user = User(
-                username=form.username.data,
-                email=form.email.data,
-                password=hash,
-                role=form.role.data,
-                department=form.department.data
-            )
-            app.db_session.add(new_user)
-            app.db_session.commit()
-            flash("Вы успешно зарегистрированы", "success")
-            return redirect(url_for('auth.login'))
-        except Exception as e:
-            flash("Ошибка при добавлении в БД", "error")
-            print(str(e))
-
-    return render_template("auth/register.html", title="Регистрация", form=form)
-
-
 @auth.route('/profile/<int:user_id>')
 @login_required
 def profile(user_id):
+    is_admin = (current_user.username == Config.ADMIN_USERNAME)
     user_chosen = app.db_session.query(User).filter(User.id == user_id).first()
     return render_template('auth/user_profile.html',
                            title=f"Профиль пользователя {user_chosen.username}",
                            user=user_chosen,
-                           menu=mainmenu)
+                           menu=mainmenu,
+                           is_admin=is_admin)
 
 

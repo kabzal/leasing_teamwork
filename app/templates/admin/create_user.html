@@ -1,12 +1,19 @@
-<!-- templates/auth/register.html -->
-
 {% extends "base.html" %}
 
 {% block content %}
 <div class="container">
     <h2>Регистрация</h2>
+      {% with messages = get_flashed_messages() %}
+      {% if messages %}
+      <div class="alert alert-info">
+        {% for message in messages %}
+        {{ message }}
+        {% endfor %}
+      </div>
+      {% endif %}
+      {% endwith %}
 
-    <form method="POST" action="{{ url_for('auth.register') }}">
+    <form method="POST" action="{{ url_for('admin.create_user') }}">
         {{ form.hidden_tag() }}
 
         <div class="form-group">

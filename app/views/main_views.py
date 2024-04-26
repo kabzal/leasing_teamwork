@@ -3,6 +3,7 @@ from flask_login import current_user, login_required
 
 from app.forms import ProjectForm, TaskForm, ProjectEditForm, TaskEditForm
 from app.models import Status, User, Project, Task
+from config import Config
 
 # Создание "синего принта"
 main = Blueprint('main', __name__)
@@ -37,7 +38,11 @@ mainmenu = [{'title': 'Главная', 'url': '/'},
 def index():
     if current_user.is_authenticated:
         projects = current_user.projects_participated
-        return render_template("index.html", projects=projects, menu=mainmenu)
+        is_admin = (current_user.username == Config.ADMIN_USERNAME)
+        return render_template("index.html",
+                               projects=projects,
+                               menu=mainmenu,
+                               is_admin=is_admin)
     else:
         return redirect(url_for("auth.login"))
 
@@ -46,6 +51,7 @@ def index():
 @login_required
 @main.route('/create_project', methods=["POST", "GET"])
 def create_project():
+    is_admin = (current_user.username == Config.ADMIN_USERNAME)
     statuses = app.db_session.query(Status).all()
     employees = app.db_session.query(User).all()
 
@@ -73,23 +79,30 @@ def create_project():
             flash("Ошибка при добавлении проекта в БД", "error")
             print(str(e))
 
-    return render_template('create_project.html', title="Создание нового проекта", menu=mainmenu, form=form)
+    return render_template('create_project.html',
+                           title="Создание нового проекта",
+                           menu=mainmenu,
+                           form=form,
+                           is_admin=is_admin)
 
 
 @login_required
 @main.route('/project/<int:project_id>')
 def project(project_id: int):
     project_chosen = app.db_session.query(Project).filter(Project.id == project_id).first()
+    is_admin = (current_user.username == Config.ADMIN_USERNAME)
 
     return render_template('project.html',
                            title=project_chosen.project_name,
                            proj=project_chosen,
-                           menu=mainmenu)
+                           menu=mainmenu,
+                           is_admin=is_admin)
 
 
 @login_required
 @main.route('/project/<int:project_id>/edit', methods=["POST", "GET"])
 def edit_project(project_id):
+    is_admin = (current_user.username == Config.ADMIN_USERNAME)
     project_chosen = app.db_session.query(Project).filter(Project.id == project_id).first()
 
     if not project_chosen:
@@ -135,12 +148,14 @@ def edit_project(project_id):
     return render_template('edit_project.html',
                            form=form,
                            proj=project_chosen,
-                           menu=mainmenu)
+                           menu=mainmenu,
+                           is_admin=is_admin)
 
 
 @login_required
 @main.route('/project/<int:project_id>/add_task', methods=["POST", "GET"])
 def add_task(project_id: int):
+    is_admin = (current_user.username == Config.ADMIN_USERNAME)
     statuses = app.db_session.query(Status).all()
     employees = app.db_session.query(User).all()
 
@@ -168,26 +183,29 @@ def add_task(project_id: int):
     return render_template('add_task.html',
                            title="Создание новой задачи",
                            menu=mainmenu,
-                           form=form)
+                           form=form,
+                           is_admin=is_admin)
 
 
 @login_required
 @main.route('/project/<int:project_id>/task/<int:task_id>')
 def task(project_id, task_id):
+    is_admin = (current_user.username == Config.ADMIN_USERNAME)
     task_chosen = app.db_session.query(Task).filter(Task.id == task_id).first()
 
     return render_template('task.html',
                            title=f"Задача: {task_chosen.task_title}",
                            task=task_chosen,
                            project_id=project_id,
-                           menu=mainmenu)
+                           menu=mainmenu,
+                           is_admin=is_admin)
 
 
 @login_required
 @main.route('/project/<int:project_id>/task/<int:task_id>/edit', methods=["POST", "GET"])
 def edit_task(project_id, task_id):
+    is_admin = (current_user.username == Config.ADMIN_USERNAME)
     task_chosen = app.db_session.query(Task).filter(Task.id == task_id).first()
-    print(task_chosen)
 
     if not task_chosen:
         flash("Задача не найдена", "error")
@@ -235,4 +253,5 @@ def edit_task(project_id, task_id):
     return render_template('edit_task.html',
                            form=form,
                            task=task_chosen,
-                           menu=mainmenu)
+                           menu=mainmenu,
+                           is_admin=is_admin)

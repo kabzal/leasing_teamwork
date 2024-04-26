@@ -3,7 +3,7 @@ from flask_login import LoginManager
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from instance.config import Config
+from config import Config
 from .views import main_bl, auth_bl, admin_bl
 from .models import User
 
