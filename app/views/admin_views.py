@@ -2,7 +2,7 @@ from flask import Blueprint, redirect, url_for, render_template, flash, current_
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from app.models import User, Department
+from app.models import User, Department, Status, Project, Task
 from app.forms import LoginForm, RegisterForm, UserEditForm
 from config import Config
 
@@ -12,6 +12,14 @@ app = None
 
 mainmenu = [{'title': 'Главная', 'url': '/'},
             {'title': 'Выйти из профиля', 'url': '/logout'}]
+
+models_dict = {
+    'users': User,
+    'departments': Department,
+    'statuses': Status,
+    'projects': Project,
+    'tasks': Task,
+}
 
 @admin.before_request
 def before_request():
@@ -24,6 +32,62 @@ def teardown_request(request):
     global app
     app = None
     return request
+
+
+@login_required
+@admin.route('/manage_groups/<string:group>')
+def manage_groups(group):
+    is_admin = current_user.email == Config.ADMIN_EMAIL
+
+    if not is_admin:
+        flash("Данный раздел доступен только администратору", "error")
+        return redirect(url_for("main.index"))
+
+    if group == 'all':
+        objects = False
+    elif group in models_dict.keys():
+        objects = sorted(app.db_session.query(models_dict[group]).all(), key=lambda x: x.id)
+    else:
+        flash("Данная ссылка недействительна", "error")
+        return redirect(url_for("main.index"))
+
+    return render_template('admin/manage_groups.html',
+                           group=group,
+                           objects=objects,
+                           menu=mainmenu,
+                           is_admin=is_admin)
+
+
+@login_required
+@admin.route('/delete_obj/<string:group>/<int:obj_id>')
+def delete_obj(group, obj_id):
+    is_admin = current_user.email == Config.ADMIN_EMAIL
+
+    if not is_admin:
+        flash("Данный раздел доступен только администратору", "error")
+        return redirect(url_for("main.index"))
+
+    if group in models_dict.keys():
+        if group == 'users' and obj_id == current_user.id:
+            flash("Вы не можете удалить сами себя", "error")
+            return redirect(url_for("admin.manage_groups", group='users'))
+
+        try:
+            obj_to_delete = app.db_session.query(models_dict[group]).filter(models_dict[group].id == obj_id).first()
+
+            if obj_to_delete is None:
+                flash("Объект не найден", "error")
+                return redirect(url_for("admin.manage_groups", group=group))
+
+            app.db_session.delete(obj_to_delete)
+            app.db_session.commit()
+            flash("Объект успешно удален", "error")
+            return redirect(url_for("admin.manage_groups", group=group))
+
+        except Exception as e:
+            app.db_session.rollback()
+            flash(f"Ошибка при удалении пользователя: {e}", "error")
+            return redirect(url_for("admin.manage_groups", group=group))
 
 
 @login_required

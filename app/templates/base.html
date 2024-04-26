@@ -14,7 +14,7 @@
                 {% endfor %}
 
                 {% if is_admin %}
-                    <li><a href="{{ url_for('admin.create_user') }}">Создать пользователя</a></li>
+                    <li><a href="{{ url_for('admin.manage_groups', group='all') }}">Управление группами</a></li>
                 {% endif %}
 
             </ul>

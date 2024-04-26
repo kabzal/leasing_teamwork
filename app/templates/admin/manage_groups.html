@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+{{ super() }}
+<div class="container">
+  <h1>Управление группами</h1>
+    <div>
+        <h2>Выбрать группу</h2>
+        <ul>
+            <li><a href="{{ url_for('admin.manage_groups', group='users') }}">Пользователи</a></li>
+            <li><a href="{{ url_for('admin.manage_groups', group='departments') }}">Отделы</a></li>
+            <li><a href="{{ url_for('admin.manage_groups', group='statuses') }}">Статусы</a></li>
+            <li><a href="{{ url_for('admin.manage_groups', group='projects') }}">Проекты</a></li>
+            <li><a href="{{ url_for('admin.manage_groups', group='tasks') }}">Задачи</a></li>
+        </ul>
+    </div>
+
+    {% if objects %}
+    <div>
+        <h3>Перечень элементов группы</h3>
+        {% if group == 'users' %}
+            <a href="{{ url_for('admin.create_user') }}">Добавить нового пользователя</a>
+            {% for obj in objects %}
+                <p>{{ obj.id }} - <a href="{{ url_for('auth.profile', user_id=obj.id) }}">{{ obj.username }}</a> - <a href="{{ url_for('admin.edit_user', user_id=obj.id) }}">Редактировать</a></p>
+            {% endfor %}
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
