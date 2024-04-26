@@ -1,5 +1,5 @@
 venv/
-instance/
+config.py
 __pycache__/
 .idea/
 alembic.ini
