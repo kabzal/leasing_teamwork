@@ -38,14 +38,14 @@
         {% if group == 'departments' %}
             <a href="{{ url_for('admin.create_obj', group='departments') }}">Добавить новый отдел</a>
             {% for obj in objects %}
-                <p>{{ obj.id }} - {{ obj.department_name }} - <a href="{{ url_for('admin.edit_obj', group=group, obj_id=obj.id) }}">Редактировать</a> - <a href="{{ url_for('admin.delete_obj', group=group, obj_id = obj.id) }}">Удалить</a></p>
+                <p>{{ obj.id }} - <a href="{{ url_for('main.department_view', dept_id=obj.id) }}">{{ obj.department_name }}</a> - <a href="{{ url_for('admin.edit_obj', group=group, obj_id=obj.id) }}">Редактировать</a> - <a href="{{ url_for('admin.delete_obj', group=group, obj_id = obj.id) }}">Удалить</a></p>
             {% endfor %}
         {% endif %}
 
         {% if group == 'statuses' %}
             <a href="{{ url_for('admin.create_obj', group='statuses') }}">Добавить новый статус</a>
             {% for obj in objects %}
-                <p>{{ obj.id }} - {{ obj.status_name }} - <a href="{{ url_for('admin.edit_obj', group=group, obj_id=obj.id) }}">Редактировать</a> - <a href="{{ url_for('admin.delete_obj', group=group, obj_id = obj.id) }}">Удалить</a></p>
+                <p>{{ obj.id }} - <a href="{{ url_for('main.status_view', status_id=obj.id) }}">{{ obj.status_name }}</a> - <a href="{{ url_for('admin.edit_obj', group=group, obj_id=obj.id) }}">Редактировать</a> - <a href="{{ url_for('admin.delete_obj', group=group, obj_id = obj.id) }}">Удалить</a></p>
             {% endfor %}
         {% endif %}
 

@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}
+{{super()}}
+{% endblock %}
+
+{% block content %}
+{{ super() }}
+<h1>Состав отдела: {{ dept.department_name }}</h1>
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+  <div class="alert alert-info">
+    {% for message in messages %}
+    {{ message }}
+    {% endfor %}
+  </div>
+  {% endif %}
+  {% endwith %}
+
+{% if is_admin %}
+    <p><a href="{{ url_for('admin.edit_obj', group='departments', obj_id=dept.id) }}">Редактировать название отдела</a></p>
+{% endif %}
+
+<div>
+    <ul>
+    {% for emp in dept_employees %}
+        <li><a href="{{ url_for('auth.profile', user_id=emp.id) }}">{{ emp.username }}</a>, {{ emp.role }}</li>
+    {% endfor %}
+    </ul>
+</div>
+
+{% endblock %}

@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, curren
 from flask_login import current_user, login_required
 
 from app.forms import ProjectForm, TaskForm, ProjectEditForm, TaskEditForm
-from app.models import Status, User, Project, Task
+from app.models import Status, User, Project, Task, Department
 from config import Config
 
 # Создание "синего принта"
@@ -259,5 +259,33 @@ def edit_task(project_id, task_id):
     return render_template('edit_task.html',
                            form=form,
                            task=task_chosen,
+                           menu=mainmenu,
+                           is_admin=is_admin)
+
+
+@login_required
+@main.route('/department/<int:dept_id>')
+def department_view(dept_id):
+    is_admin = (current_user.email == Config.ADMIN_EMAIL)
+    department_chosen = app.db_session.query(Department).filter(Department.id == dept_id).first()
+    dept_employees = app.db_session.query(User).filter(User.department_id == dept_id).all()
+
+    return render_template('department.html',
+                           dept=department_chosen,
+                           dept_employees=dept_employees,
+                           menu=mainmenu,
+                           is_admin=is_admin)
+
+
+@login_required
+@main.route('/status/<int:status_id>')
+def status_view(status_id):
+    is_admin = (current_user.email == Config.ADMIN_EMAIL)
+    status_chosen = app.db_session.query(Status).filter(Status.id == status_id).first()
+    status_projects = app.db_session.query(Project).filter(Project.status_id == status_id).all()
+
+    return render_template('status.html',
+                           status=status_chosen,
+                           status_projects=status_projects,
                            menu=mainmenu,
                            is_admin=is_admin)

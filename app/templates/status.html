@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}
+{{super()}}
+{% endblock %}
+
+{% block content %}
+{{ super() }}
+<h1>Проекты со статусом: {{ status.status_name }}</h1>
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+  <div class="alert alert-info">
+    {% for message in messages %}
+    {{ message }}
+    {% endfor %}
+  </div>
+  {% endif %}
+  {% endwith %}
+
+{% if is_admin %}
+    <p><a href="{{ url_for('admin.edit_obj', group='statuses', obj_id=status.id) }}">Редактировать название статуса</a></p>
+{% endif %}
+
+<div>
+    <ul>
+    {% for pr in status_projects %}
+        <li><a href="{{ url_for('main.project', project_id=pr.id) }}">{{ pr.project_name }}</a></li>
+    {% endfor %}
+    </ul>
+</div>
+
+{% endblock %}
