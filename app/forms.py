@@ -102,3 +102,10 @@ class TaskEditForm(FlaskForm):
         super().__init__(*args, **kwargs)
         self.status.choices = [(0, "Оставить без изменений")] + [(st.id, st.status_name) for st in statuses]
         self.executor.choices = [(0, "Оставить без изменений")] + [(employee.id, employee.username) for employee in employees]
+
+
+class ObjCreateForm(FlaskForm):
+    obj_name = StringField("Наименование: ", validators=[
+        DataRequired(),
+        Length(min=4, max=200, message="Название должно быть от 4 до 100 символов")])
+    submit = SubmitField("Сохранить")

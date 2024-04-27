@@ -2,6 +2,15 @@
 
 {% block content %}
 {{ super() }}
+  {% with messages = get_flashed_messages() %}
+  {% if messages %}
+  <div class="alert alert-info">
+    {% for message in messages %}
+    {{ message }}
+    {% endfor %}
+  </div>
+  {% endif %}
+  {% endwith %}
 <div class="container">
   <h1>Управление группами</h1>
     <div>
@@ -18,10 +27,39 @@
     {% if objects %}
     <div>
         <h3>Перечень элементов группы</h3>
+
         {% if group == 'users' %}
             <a href="{{ url_for('admin.create_user') }}">Добавить нового пользователя</a>
             {% for obj in objects %}
-                <p>{{ obj.id }} - <a href="{{ url_for('auth.profile', user_id=obj.id) }}">{{ obj.username }}</a> - <a href="{{ url_for('admin.edit_user', user_id=obj.id) }}">Редактировать</a></p>
+                <p>{{ obj.id }} - <a href="{{ url_for('auth.profile', user_id=obj.id) }}">{{ obj.username }}</a> - <a href="{{ url_for('admin.edit_user', user_id=obj.id) }}">Редактировать</a> - <a href="{{ url_for('admin.delete_obj', group=group, obj_id = obj.id) }}">Удалить</a></p>
+            {% endfor %}
+        {% endif %}
+
+        {% if group == 'departments' %}
+            <a href="{{ url_for('admin.create_obj', group='departments') }}">Добавить новый отдел</a>
+            {% for obj in objects %}
+                <p>{{ obj.id }} - {{ obj.department_name }} - <a href="{{ url_for('admin.edit_obj', group=group, obj_id=obj.id) }}">Редактировать</a> - <a href="{{ url_for('admin.delete_obj', group=group, obj_id = obj.id) }}">Удалить</a></p>
+            {% endfor %}
+        {% endif %}
+
+        {% if group == 'statuses' %}
+            <a href="{{ url_for('admin.create_obj', group='statuses') }}">Добавить новый статус</a>
+            {% for obj in objects %}
+                <p>{{ obj.id }} - {{ obj.status_name }} - <a href="{{ url_for('admin.edit_obj', group=group, obj_id=obj.id) }}">Редактировать</a> - <a href="{{ url_for('admin.delete_obj', group=group, obj_id = obj.id) }}">Удалить</a></p>
+            {% endfor %}
+        {% endif %}
+
+        {% if group == 'projects' %}
+            <a href="{{ url_for('main.create_project') }}">Добавить новый проект</a>
+            {% for obj in objects %}
+                <p>{{ obj.id }} - <a href="{{ url_for('main.project', project_id=obj.id) }}">{{ obj.project_name }}</a> - <a href="{{ url_for('main.edit_project', project_id=obj.id) }}">Редактировать</a> - <a href="{{ url_for('admin.delete_obj', group=group, obj_id = obj.id) }}">Удалить</a></p>
+            {% endfor %}
+        {% endif %}
+
+        {% if group == 'tasks' %}
+            <p>Добавление новых задач возможно только через страницы проектов</p>
+            {% for obj in objects %}
+                <p>{{ obj.id }} - <a href="{{ url_for('main.task', project_id=obj.project.id, task_id=obj.id) }}">{{ obj.task_title }}</a> - <a href="{{ url_for('main.edit_task', project_id=obj.project.id, task_id=obj.id) }}">Редактировать</a> - <a href="{{ url_for('admin.delete_obj', group=group, obj_id = obj.id) }}">Удалить</a></p>
             {% endfor %}
         {% endif %}
     </div>

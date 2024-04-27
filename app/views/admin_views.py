@@ -3,7 +3,7 @@ from flask_login import LoginManager, login_user, login_required, logout_user, c
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from app.models import User, Department, Status, Project, Task
-from app.forms import LoginForm, RegisterForm, UserEditForm
+from app.forms import LoginForm, RegisterForm, UserEditForm, ObjCreateForm
 from config import Config
 
 admin = Blueprint('admin', __name__)
@@ -59,6 +59,97 @@ def manage_groups(group):
 
 
 @login_required
+@admin.route('/create_obj/<string:group>', methods=["POST", "GET"])
+def create_obj(group):
+    is_admin = current_user.email == Config.ADMIN_EMAIL
+
+    if not is_admin:
+        flash("Данный раздел доступен только администратору", "error")
+        return redirect(url_for("main.index"))
+
+    if group in ('departments', 'statuses'):
+        form = ObjCreateForm()
+        if form.validate_on_submit():
+            try:
+                new_obj = None
+                if group == 'departments':
+                    new_obj = models_dict[group](
+                        department_name=form.obj_name.data
+                    )
+                elif group == 'statuses':
+                    new_obj = models_dict[group](
+                        status_name=form.obj_name.data
+                    )
+                app.db_session.add(new_obj)
+                app.db_session.commit()
+                flash("Объект успешно добавлен", "success")
+                return redirect(url_for("admin.manage_groups", group=group))
+
+            except Exception as e:
+                flash("Ошибка при добавлении в БД", "error")
+                print(str(e))
+    else:
+        flash("Данная ссылка не поддерживается", "error")
+        return redirect(url_for("admin.manage_groups", group=group))
+
+    return render_template('admin/create_obj.html',
+                               form=form,
+                               menu=mainmenu,
+                               is_admin=is_admin,
+                               group=group)
+
+
+@login_required
+@admin.route('/edit_obj/<string:group>/<int:obj_id>', methods=["POST", "GET"])
+def edit_obj(group, obj_id):
+    is_admin = (current_user.email == Config.ADMIN_EMAIL)
+
+    if not is_admin:
+        flash("Вносить изменения имеет право только администратор", "error")
+        return redirect(url_for("admin.manage_groups", group=group))
+
+    if group in ('departments', 'statuses'):
+        form = ObjCreateForm()
+        model_chosen = models_dict[group]
+        obj_chosen = app.db_session.query(model_chosen).filter(model_chosen.id == obj_id).first()
+    else:
+        flash("Страница не найдена", "error")
+        return redirect(url_for("admin.manage_groups", group=group))
+
+    if not obj_chosen:
+        flash("Объект не найден", "error")
+        return redirect(url_for("main.index"))
+
+    if request.method == "GET":
+        if group == 'departments':
+            form.obj_name.data = obj_chosen.department_name
+        elif group == 'statuses':
+            form.obj_name.data = obj_chosen.status_name
+
+    if form.validate_on_submit():
+        try:
+            if group == 'departments':
+                obj_chosen.department_name = form.obj_name.data
+            elif group == 'statuses':
+                obj_chosen.status_name = form.obj_name.data
+            app.db_session.commit()
+            flash("Объект успешно обновлен", "success")
+            return redirect(url_for("admin.manage_groups", group=group))
+
+        except Exception as e:
+            app.db_session.rollback()
+            print(f"Ошибка при обновлении данных: {e}")
+            flash(f"Ошибка при обновлении данных: {e}", "error")
+
+    return render_template('admin/edit_obj.html',
+                           form=form,
+                           obj=obj_chosen,
+                           menu=mainmenu,
+                           is_admin=is_admin,
+                           group=group)
+
+
+@login_required
 @admin.route('/delete_obj/<string:group>/<int:obj_id>')
 def delete_obj(group, obj_id):
     is_admin = current_user.email == Config.ADMIN_EMAIL
@@ -88,6 +179,9 @@ def delete_obj(group, obj_id):
             app.db_session.rollback()
             flash(f"Ошибка при удалении пользователя: {e}", "error")
             return redirect(url_for("admin.manage_groups", group=group))
+    else:
+        flash("Данная ссылка не поддерживается", "error")
+        return redirect(url_for("admin.manage_groups", group=group))
 
 
 @login_required
