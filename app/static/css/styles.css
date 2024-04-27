@@ -1,0 +1,75 @@
+/* Основные стили для приложения */
+@font-face {
+    font-family: 'NotoSans-Light';
+    src: url('../fonts//NotoSans-Light.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'NotoSans-Regular';
+    src: url('../fonts//NotoSans-Regular.ttf') format('truetype');
+}
+
+body {
+    font-family: 'NotoSans-Light';  /* Простой, современный шрифт */
+    background-color: #1F2833;
+    color: #c5c6c7;  /* Темно-серый цвет текста */
+    margin: 0;
+    padding: 0;
+}
+
+/* Стили для заголовков */
+h1, h2 {
+    font-family: 'NotoSans-Regular';
+    color: #66fcf1;  /* Темный цвет текста для заголовков */
+    margin-bottom: 10px;  /* Отступ снизу для заголовков */
+}
+
+/* Стили для ссылок */
+a {
+    font-family: 'NotoSans-Regular';
+    color: #e3fefc;  /* Начальный цвет ссылки */
+    text-decoration: none;  /* Убираем подчеркивание */
+}
+
+a:hover {
+    color: #66fcf1;  /* Темно-зеленый при наведении */
+    text-decoration: none;  /* Подчеркивание при наведении */
+}
+
+/* Стили для основного меню */
+.mainmenu {
+    list-style-type: none;  /* Убираем маркированный список */
+    padding: 0;
+}
+
+.mainmenu li {
+    display: inline-block;  /* Ссылки меню в одну строку */
+    margin-right: 10px;  /* Отступ между элементами меню */
+}
+
+/* Стили для содержимого */
+ul {
+    list-style-type: disc;  /* Маркированный список */
+}
+
+li {
+    margin-bottom: 5px;  /* Отступ между элементами списка */
+}
+
+button, .btn {
+    appearance: none;
+    background-color: transparent;
+    border: 2px white;
+    border-radius: 15px;
+    box-sizing: border-box;
+    display: inline-block;
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;  /* Указатель при наведении */
+}
+
+button:hover, .btn:hover {
+    background-color: #66fcf1;
+    color: black;
+}

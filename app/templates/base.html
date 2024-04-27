@@ -4,22 +4,28 @@
     {% block title %}
     <title>Leasing Teamwork</title>
     {% endblock %}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}">
     </head>
     <body>
         {% block content %}
+        <div>
             {% block mainmenu %}
             <ul class="mainmenu">
-                {% for p in menu %}
-                <li><a href="{{p.url}}">{{p.title}}</a></li>
-                {% endfor %}
+                <li><a href="{{url_for('main.index')}}">Главная страница</a></li>
+                <li> | </li>
 
                 {% if is_admin %}
                     <li><a href="{{ url_for('admin.manage_groups', group='all') }}">Управление группами</a></li>
+                    <li> | </li>
                 {% endif %}
+
+                <li>Пользователь: <a href="{{ url_for('auth.profile', user_id=current_user.id) }}">{{ current_user.username }}</a></li>
+                <li> | </li>
+                <li><a href="{{ url_for('auth.logout') }}">Выйти из профиля</a></li>
 
             </ul>
             {% endblock mainmenu %}
-        <p><a href="{{ url_for('auth.profile', user_id=current_user.id) }}">{{ current_user.username }}</a></p>
+        </div>
         {% endblock %}
     </body>
 </html>
