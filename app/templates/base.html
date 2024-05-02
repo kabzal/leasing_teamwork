@@ -8,21 +8,20 @@
     </head>
     <body>
         {% block content %}
-        <div>
+        <div class="navbar">
             {% block mainmenu %}
             <ul class="mainmenu">
                 <li><a href="{{url_for('main.index')}}">Главная страница</a></li>
-                <li> | </li>
 
                 {% if is_admin %}
-                    <li><a href="{{ url_for('admin.manage_groups', group='all') }}">Управление группами</a></li>
                     <li> | </li>
+                    <li><a href="{{ url_for('admin.manage_groups', group='all') }}">Управление группами</a></li>
                 {% endif %}
-
+            </ul>
+            <ul class="usermenu">
                 <li>Пользователь: <a href="{{ url_for('auth.profile', user_id=current_user.id) }}">{{ current_user.username }}</a></li>
                 <li> | </li>
                 <li><a href="{{ url_for('auth.logout') }}">Выйти из профиля</a></li>
-
             </ul>
             {% endblock mainmenu %}
         </div>

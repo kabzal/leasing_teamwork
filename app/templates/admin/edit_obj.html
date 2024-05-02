@@ -1,15 +1,17 @@
 {% extends 'base.html' %}
 
 {% block content %}
+{{ super() }}
+<div class="form-container">
 <h1>Редактировать объект:
-    {% if group == 'departments' %}
-    Отдел:
-    {{ obj.department_name }}
-    {% elif group == 'statuses' %}
-    Статус:
-    {{ obj.status_name }}
-    {% endif %}
 </h1>
+    {% if group == 'departments' %}
+    <h3>Отдел:
+    {{ obj.department_name }}</h3>
+    {% elif group == 'statuses' %}
+    <h3>Статус:
+    {{ obj.status_name }}</h3>
+    {% endif %}
 
   {% with messages = get_flashed_messages() %}
   {% if messages %}
@@ -23,14 +25,15 @@
 
 <form method="POST">
     {{ form.hidden_tag() }}
-    <div>
-        {{ form.obj_name.label }}
-        {{ form.obj_name() }}
+    <div class="form-group">
+        {{ form.obj_name.label(class="form-label") }}
+        {{ form.obj_name(class="form-control") }}
     </div>
-    <div>
-        {{ form.submit() }}
+    <div class="form-group">
+        {{ form.submit(class="btn btn-primary") }}
     </div>
 </form>
 
-<p><a href="{{ url_for('admin.manage_groups', group=group) }}">Назад</a></p>
+<p><a href="{{ url_for('admin.manage_groups', group=group) }}"><- Назад</a></p>
+</div>
 {% endblock %}

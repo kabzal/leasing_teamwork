@@ -1,34 +1,36 @@
 {% extends 'base.html' %}
 
 {% block content %}
+{{ super() }}
 <h1>Редактировать проект: {{ proj.project_name }}</h1>
-
+<div class="form-container">
 <form method="POST">
     {{ form.hidden_tag() }}
-    <div>
-        {{ form.project_name.label }}
-        {{ form.project_name() }}
+    <div class="form-group">
+        {{ form.project_name.label(class="form-label") }}
+        {{ form.project_name(class="form-control") }}
     </div>
-    <div>
-        {{ form.project_description.label }}
-        {{ form.project_description() }}
+    <div class="form-group">
+        {{ form.project_description.label(class="form-label") }}
+        {{ form.project_description(class="form-control") }}
     </div>
-    <div>
-        {{ form.status.label }}
-        {{ form.status() }}
+    <div class="form-group">
+        {{ form.status.label(class="form-label") }}
+        {{ form.status(class="form-control") }}
     </div>
-    <div>
-        {{ form.team.label }}
-        {{ form.team() }}
+    <div class="form-group">
+        {{ form.team.label(class="form-label") }}
+        {{ form.team(class="form-control") }}
     </div>
-    <div>
-        {{ form.team_lead.label }}
-        {{ form.team_lead() }}
+    <div class="form-group">
+        {{ form.team_lead.label(class="form-label") }}
+        {{ form.team_lead(class="form-control") }}
     </div>
-    <div>
-        {{ form.submit() }}
+    <div class="form-group">
+        {{ form.submit(class="btn btn-primary") }}
     </div>
 </form>
 
-<p><a href="{{ url_for('main.project', project_id=proj.id) }}">Назад к проекту</a></p>
+<a href="{{ url_for('main.project', project_id=proj.id) }}"><- Назад к проекту</a>
+</div>
 {% endblock %}

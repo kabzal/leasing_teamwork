@@ -8,68 +8,277 @@
     font-family: 'NotoSans-Regular';
     src: url('../fonts//NotoSans-Regular.ttf') format('truetype');
 }
+@font-face {
+    font-family: 'RobotoMono-Regular';
+    src: url('../fonts//RobotoMono-Regular.ttf') format('truetype');
+}
 
 body {
-    font-family: 'NotoSans-Light';  /* Простой, современный шрифт */
+    font-family: 'NotoSans-Light';
     background-color: #1F2833;
     color: #c5c6c7;  /* Темно-серый цвет текста */
     margin: 0;
-    padding: 0;
+    padding-left: 40px;
+    padding-right: 40px;
+    padding-top: 10px;
 }
 
 /* Стили для заголовков */
-h1, h2 {
-    font-family: 'NotoSans-Regular';
-    color: #66fcf1;  /* Темный цвет текста для заголовков */
+h1, h2, h3 {
+    font-family: 'RobotoMono-Regular';
+    color: #ff6a00;  /* Темный цвет текста для заголовков */
     margin-bottom: 10px;  /* Отступ снизу для заголовков */
 }
 
 /* Стили для ссылок */
 a {
-    font-family: 'NotoSans-Regular';
-    color: #e3fefc;  /* Начальный цвет ссылки */
-    text-decoration: none;  /* Убираем подчеркивание */
+    font-family: 'RobotoMono-Regular';
+    color: #e3fefc;
+    text-decoration: none;
 }
 
 a:hover {
-    color: #66fcf1;  /* Темно-зеленый при наведении */
-    text-decoration: none;  /* Подчеркивание при наведении */
+    color: #ff6a00;
+    text-decoration: none;
 }
 
 /* Стили для основного меню */
-.mainmenu {
-    list-style-type: none;  /* Убираем маркированный список */
-    padding: 0;
+.navbar {
+    display: flex; /* Используем Flexbox */
+    justify-content: space-between; /* Разделяем элементы по краям */
+    align-items: center; /* Выравниваем по вертикали */
 }
 
-.mainmenu li {
-    display: inline-block;  /* Ссылки меню в одну строку */
-    margin-right: 10px;  /* Отступ между элементами меню */
+/* Стили для меню */
+.mainmenu, .usermenu {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+}
+
+.mainmenu li, .usermenu li {
+    margin-right: 10px;
+}
+
+.usermenu {
+    text-align: right;
 }
 
 /* Стили для содержимого */
 ul {
-    list-style-type: disc;  /* Маркированный список */
+    list-style-type: none;
 }
 
 li {
-    margin-bottom: 5px;  /* Отступ между элементами списка */
+    margin-bottom: 5px;
 }
 
-button, .btn {
-    appearance: none;
-    background-color: transparent;
-    border: 2px white;
-    border-radius: 15px;
-    box-sizing: border-box;
-    display: inline-block;
-    color: white;
-    border: none;
-    padding: 10px;
-    cursor: pointer;  /* Указатель при наведении */
+.btn {
+  display: inline-block; /* Отображение в виде блока */
+  padding: 10px 20px; /* Отступы */
+  font-size: 16px; /* Размер шрифта */
+  font-family: 'RobotoMono-Regular';
+  border: 1px solid #FF4500; /* Без границы */
+  border-radius: 15px; /* Скругленные углы */
+  box-sizing: border-box;
+  background-color: transparent; /* Цвет фона */
+  color: #fff; /* Цвет текста */
+  cursor: pointer; /* Курсор указывает на активное состояние */
 }
 
 button:hover, .btn:hover {
-    background-color: #66fcf1;
+    background-color: #ff6a00;
     color: black;
+}
+
+.btn.login {
+    width: 300px;
+}
+
+/* Оформление представления проектов */
+.projects-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    padding: 20px;
+}
+
+.project-block {
+    background-color: transparent;
+    border: 1px solid #ff6a00;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.project-status, .project-team-lead {
+    font-family: 'NotoSans-Light';
+}
+
+.project-block:hover {
+    background-color: #ff6a00;
+    color: #1F2833;
+}
+
+.project-block-add {
+    background-color: transparent;
+    border: 1px solid #ff6a00;
+    border-radius: 5px;
+    padding: 60px 50px 50px 50px;
+    text-align: center;
+}
+
+.project-block-add:hover {
+    background-color: #ff6a00;
+    color: #1F2833;
+}
+
+.project-block p {
+    margin: 10px 0;
+}
+
+.red-text {
+    color: #ff6a00;
+}
+
+.groups-container {
+    display: flex;
+}
+
+.group-list {
+    flex: 0 0 225px;
+    position: sticky;
+    top: 10px;
+    border-right: 1px solid #ddd;
+    height: 100vh;
+    overflow-y: auto;
+}
+
+.group-elements-list {
+    flex: 1; /* Занимает оставшееся пространство */
+    padding: 0 20px 20px 20px;
+}
+
+
+.group-list ul {
+    list-style-type: none;
+}
+
+.group-elements-list ul {
+    list-style-type: none;
+}
+
+/* Общий стиль для таблицы */
+.table {
+    border-collapse: collapse;
+}
+
+.table td {
+    border: none;
+    padding: 5px 10px 5px 10px;
+}
+
+\.table tr {
+    margin-bottom: 5px;
+}
+
+.table td:nth-child(3),
+.table td:nth-child(4) {
+    text-align: right;
+}
+
+.chosen-group {
+    font-family: 'RobotoMono-Regular';
+    color: #ff6a00;
+}
+
+.form-container {
+    max-width: 450px;
+}
+
+.form-group {
+  display: flex; /* Используем Flexbox для горизонтального выравнивания */
+  align-items: center; /* Центрируем элементы по вертикали */
+  margin: 15px 15px 15px 15px;
+}
+
+.form-label {
+  width: 150px; /* Фиксированная ширина меток */
+  text-align: left; /* Выравниваем текст меток по правому краю */
+  padding-right: 10px; /* Отступ между меткой и полем */
+  color: #ff6a00;
+}
+
+.form-control {
+  flex: 1;
+  padding: 8px; /* Поля ввода */
+  font-size: 13px; /* Размер шрифта */
+  font-family: 'RobotoMono-Regular';
+  border-radius: 4px; /* Скругленные углы */
+  border: 1px solid #ccc; /* Граница */
+}
+
+.current-status {
+    font-family: 'RobotoMono-Regular';
+    color: #ff6a00;
+    border: 1px solid #ccc;
+    padding: 5px;
+    border-radius: 5px;
+    width: 150px;
+    text-align: center;
+    margin: 0;
+}
+
+.project-descr, .task-descr {
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    width: 75%;
+    padding: 10px;
+}
+
+.flash {
+    font-family: 'RobotoMono-Regular';
+    color: #ccc;
+    width: 75%;
+    padding: 10px;
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    margin-top: 10px;
+}
+
+.flash.error {
+    border-color: #ff6a00;
+}
+
+.alert.alert-info {
+    font-family: 'RobotoMono-Regular';
+    color: #ccc;
+    width: 75%;
+    padding: 10px;
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    margin-top: 10px;
+}
+
+.center-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.form-container.login {
+    border: 1px solid #ccc;
+    padding: 0 20px 20px 20px;
+    text-align: center;
+}
+
+.form-container.login h1 {
+    text-align: center;
+}
+
+.invalid-feedback {
+    color: #ff6a00;
+    font-size: 10px;
 }

@@ -9,36 +9,35 @@
 <h1>{{ title }}</h1>
 {% with messages = get_flashed_messages() %}
   {% if messages %}
-  <div class="alert alert-info">
+  <p><div class="alert alert-info">
     {% for message in messages %}
-    {{ message }}
+      {{ message }}
     {% endfor %}
-  </div>
+  </div></p>
   {% endif %}
   {% endwith %}
 
+<div class="current-status">
+    {{ task.status.status_name }}
+</div>
+
 <p><a href="{{ url_for('main.edit_task', project_id=task.project.id, task_id=task.id) }}">Редактировать задачу</a></p>
-<div>
+
+<div class="task-descr">
     {{ task.task_description }}
 </div>
 
 <div>
-    {{ task.status.status_name }}
-</div>
-
-<div>
-    <p>Исполнитель:
-    <a href="{{ url_for('auth.profile', user_id=task.executor.id) }}">{{ task.executor.username }}</a>
-    {{ task.executor.role }}
+    <p><span class="red-text">Исполнитель</span>:
+    <a href="{{ url_for('auth.profile', user_id=task.executor.id) }}">{{ task.executor.username }}</a>, {{ task.executor.role }}
     </p>
 </div>
 
 <div>
-    <p>Дедлайн: {{ task.deadline }}</p>
-
+    <p><span class="red-text">Дедлайн</span>: {{ task.deadline.strftime('%d.%m.%Y') }}</p>
 </div>
 
 <div>
-    <p><a href="{{ url_for('main.project', project_id=project_id) }}">Назад к проекту</a></p>
+    <p><a href="{{ url_for('main.project', project_id=project_id) }}"><- Назад к проекту</a></p>
 </div>
 {% endblock %}

@@ -57,7 +57,7 @@ def profile(user_id):
     is_admin = (current_user.email == Config.ADMIN_EMAIL)
     user_chosen = app.db_session.query(User).filter(User.id == user_id).first()
     return render_template('auth/user_profile.html',
-                           title=f"Профиль пользователя {user_chosen.username}",
+                           title=f"Профиль пользователя <{user_chosen.username}>",
                            user=user_chosen,
                            menu=mainmenu,
                            is_admin=is_admin)

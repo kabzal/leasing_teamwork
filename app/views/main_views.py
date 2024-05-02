@@ -5,7 +5,6 @@ from app.forms import ProjectForm, TaskForm, ProjectEditForm, TaskEditForm
 from app.models import Status, User, Project, Task, Department
 from config import Config
 
-# Создание "синего принта"
 main = Blueprint('main', __name__)
 
 
@@ -25,10 +24,6 @@ def teardown_request(request):
     return request
 
 
-mainmenu = [{'title': 'Главная', 'url': '/'},
-            {'title': 'Выйти из профиля', 'url': '/logout'}]
-
-
 """Основные страницы """
 
 
@@ -45,7 +40,6 @@ def index():
             all_projects = None
         return render_template("index.html",
                                projects=projects,
-                               menu=mainmenu,
                                is_admin=is_admin,
                                all_projects=all_projects)
     else:
@@ -77,16 +71,15 @@ def create_project():
             )
             app.db_session.add(new_project)
             app.db_session.commit()
-            flash("Вы успешно зарегистрированы", "success")
+            flash("✔️ Проект успешно создан", "success")
             return redirect(url_for('main.index'))
         except Exception as e:
             app.db_session.rollback()
-            flash("Ошибка при добавлении проекта в БД", "error")
+            flash("⚠️ Ошибка при добавлении проекта в БД", "error")
             print(str(e))
 
     return render_template('create_project.html',
                            title="Создание нового проекта",
-                           menu=mainmenu,
                            form=form,
                            is_admin=is_admin)
 
@@ -100,7 +93,6 @@ def project(project_id: int):
     return render_template('project.html',
                            title=project_chosen.project_name,
                            proj=project_chosen,
-                           menu=mainmenu,
                            is_admin=is_admin)
 
 
@@ -111,11 +103,11 @@ def edit_project(project_id):
     project_chosen = app.db_session.query(Project).filter(Project.id == project_id).first()
 
     if not project_chosen:
-        flash("Проект не найден", "error")
+        flash("⚠️ Проект не найден", "error")
         return redirect(url_for("main.index"))
 
     if current_user.id != project_chosen.team_lead_id and not is_admin:
-        flash(f"Только тимлид {project_chosen.team_lead.username} и администратор сайта могут редактировать этот проект", "error")
+        flash(f"🔒 Только тимлид {project_chosen.team_lead.username} и администратор сайта могут редактировать этот проект", "error")
         return redirect(url_for('main.project', project_id=project_id))
 
     statuses = app.db_session.query(Status).all()
@@ -144,16 +136,15 @@ def edit_project(project_id):
                 project_chosen.team_lead_id = form.team_lead.data
 
             app.db_session.commit()
-            flash("Проект успешно обновлен", "success")
+            flash("✔️ Проект успешно обновлен", "success")
             return redirect(url_for('main.project', project_id=project_id))
         except Exception as e:
             app.db_session.rollback()
-            flash(f"Ошибка при обновлении проекта: {e}", "error")
+            flash(f"⚠️ Ошибка при обновлении проекта: {e}", "error")
 
     return render_template('edit_project.html',
                            form=form,
                            proj=project_chosen,
-                           menu=mainmenu,
                            is_admin=is_admin)
 
 
@@ -164,6 +155,10 @@ def add_task(project_id: int):
     project_chosen = app.db_session.query(Project).filter(Project.id == project_id).first()
     statuses = app.db_session.query(Status).all()
     employees = project_chosen.team
+
+    if current_user not in employees and not is_admin:
+        flash("🔒 Вы не можете добавлять задачи в данном проекте, так как не являетесь частью команды проекта", "error")
+        return redirect(url_for('main.project', project_id=project_id))
 
     form = TaskForm(statuses=statuses, employees=employees)
 
@@ -179,18 +174,18 @@ def add_task(project_id: int):
             )
             app.db_session.add(new_task)
             app.db_session.commit()
-            flash("Вы успешно создали задачу", "success")
+            flash("✔️ Вы успешно создали задачу", "success")
             return redirect(url_for('main.project', project_id=project_id))
         except Exception as e:
             app.db_session.rollback()
-            flash("Ошибка при добавлении задачи в БД", "error")
+            flash("⚠️ Ошибка при добавлении задачи в БД", "error")
             print(str(e))
 
     return render_template('add_task.html',
                            title="Создание новой задачи",
-                           menu=mainmenu,
                            form=form,
-                           is_admin=is_admin)
+                           is_admin=is_admin,
+                           proj_id=project_id)
 
 
 @login_required
@@ -203,7 +198,6 @@ def task(project_id, task_id):
                            title=f"Задача: {task_chosen.task_title}",
                            task=task_chosen,
                            project_id=project_id,
-                           menu=mainmenu,
                            is_admin=is_admin)
 
 
@@ -214,15 +208,15 @@ def edit_task(project_id, task_id):
     task_chosen = app.db_session.query(Task).filter(Task.id == task_id).first()
 
     if not task_chosen:
-        flash("Задача не найдена", "error")
+        flash("⚠️ Задача не найдена", "error")
         return redirect(url_for("main.project", project_id=project_id))
 
     if task_chosen.project.id != project_id:
-        flash("Неверный запрос задачи", "error")
+        flash("⚠️ Неверный запрос задачи", "error")
         return redirect(url_for("main.index"))
 
     if current_user.id != task_chosen.project.team_lead_id and current_user.id != task_chosen.executor and not is_admin:
-        flash(f"Редактировать эту задачу могут только тимлид {task_chosen.project.team_lead.username}, исполнитель {task_chosen.executor.username} и администратор сайта", "error")
+        flash(f"🔒 Редактировать эту задачу могут только тимлид {task_chosen.project.team_lead.username}, исполнитель {task_chosen.executor.username} и администратор сайта", "error")
         return redirect(url_for('main.project', project_id=project_id))
 
     statuses = app.db_session.query(Status).all()
@@ -246,20 +240,18 @@ def edit_task(project_id, task_id):
                 task_chosen.deadline = form.deadline.data
 
             if form.executor.data != '0':
-                task_chosen.executor = form.executor.data
+                task_chosen.executor_id = form.executor.data
 
             app.db_session.commit()
-            flash("Задача успешно обновлена", "success")
+            flash("✔️ Задача успешно обновлена", "success")
             return redirect(url_for('main.task', project_id=project_id, task_id=task_id))
         except Exception as e:
             app.db_session.rollback()
-            print(f"Ошибка при обновлении задачи: {e}")
-            flash(f"Ошибка при обновлении задачи: {e}", "error")
+            flash(f"⚠️ Ошибка при обновлении задачи: {e}", "error")
 
     return render_template('edit_task.html',
                            form=form,
                            task=task_chosen,
-                           menu=mainmenu,
                            is_admin=is_admin)
 
 
@@ -273,7 +265,6 @@ def department_view(dept_id):
     return render_template('department.html',
                            dept=department_chosen,
                            dept_employees=dept_employees,
-                           menu=mainmenu,
                            is_admin=is_admin)
 
 
@@ -287,5 +278,4 @@ def status_view(status_id):
     return render_template('status.html',
                            status=status_chosen,
                            status_projects=status_projects,
-                           menu=mainmenu,
                            is_admin=is_admin)

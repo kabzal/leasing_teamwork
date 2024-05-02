@@ -2,7 +2,7 @@
 
 {% block content %}
 {{ super() }}
-<div class="container">
+<div class="form-container">
   <h1>Создание нового проекта</h1>
 
   {% with messages = get_flashed_messages() %}
@@ -19,22 +19,22 @@
     {{ form.hidden_tag() }}
 
     <div class="form-group">
-      {{ form.project_name.label }}
+      {{ form.project_name.label(class="form-label") }}
       {{ form.project_name(class="form-control") }}
     </div>
 
     <div class="form-group">
-      {{ form.project_description.label }}
+      {{ form.project_description.label(class="form-label") }}
       {{ form.project_description(class="form-control", rows=3) }}
     </div>
 
     <div class="form-group">
-      {{ form.status.label }}
+      {{ form.status.label(class="form-label") }}
       {{ form.status(class="form-control") }}
     </div>
 
     <div class="form-group">
-      {{ form.team.label }}
+      {{ form.team.label(class="form-label") }}
       {{ form.team(class="form-control", size=5, multiple=True) }}
     </div>
 

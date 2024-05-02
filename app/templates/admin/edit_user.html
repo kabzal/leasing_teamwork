@@ -1,8 +1,9 @@
 {% extends 'base.html' %}
 
 {% block content %}
+{{ super() }}
 <h1>Редактировать пользователя: {{ user.username }}</h1>
-
+<div class="form-container">
   {% with messages = get_flashed_messages() %}
   {% if messages %}
   <div class="alert alert-info">
@@ -15,29 +16,30 @@
 
 <form method="POST">
     {{ form.hidden_tag() }}
-    <div>
-        {{ form.username.label }}
-        {{ form.username() }}
+    <div class="form-group">
+        {{ form.username.label(class="form-label") }}
+        {{ form.username(class="form-control") }}
     </div>
-    <div>
-        {% if user.id == current_user.id %}
-        <p>Внимание! Если вы хотите изменить email в вашем аккаунте, то убедитесь, что измените email администратора в конфигурации сайта, иначе ваш аккаунт потеряет доступ к правам администратора</p>
-        {% endif %}
-        {{ form.email.label }}
-        {{ form.email() }}
+    {% if user.id == current_user.id %}
+        <p><i>Внимание! Если вы хотите изменить email в вашем аккаунте, то убедитесь, что измените email администратора в конфигурации сайта, иначе ваш аккаунт потеряет доступ к правам администратора</i></p>
+    {% endif %}
+    <div class="form-group">
+        {{ form.email.label(class="form-label") }}
+        {{ form.email(class="form-control") }}
     </div>
-    <div>
-        {{ form.role.label }}
-        {{ form.role() }}
+    <div class="form-group">
+        {{ form.role.label(class="form-label") }}
+        {{ form.role(class="form-control") }}
     </div>
-    <div>
-        {{ form.department.label }}
-        {{ form.department() }}
+    <div class="form-group">
+        {{ form.department.label(class="form-label") }}
+        {{ form.department(class="form-control") }}
     </div>
-    <div>
-        {{ form.submit() }}
+    <div class="form-group">
+        {{ form.submit(class="btn btn-primary") }}
     </div>
 </form>
 
-<p><a href="{{ url_for('auth.profile', user_id=user.id) }}">Назад к пользователю</a></p>
+<p><a href="{{ url_for('auth.profile', user_id=user.id) }}"><- Назад к пользователю</a></p>
+</div>
 {% endblock %}

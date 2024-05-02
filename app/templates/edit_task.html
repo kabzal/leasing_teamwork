@@ -1,8 +1,9 @@
 {% extends 'base.html' %}
 
 {% block content %}
+{{ super() }}
 <h1>Редактировать задачу: {{ task.task_title }}</h1>
-
+<div class="form-container">
   {% with messages = get_flashed_messages() %}
   {% if messages %}
   <div class="alert alert-info">
@@ -15,30 +16,31 @@
 
 <form method="POST">
     {{ form.hidden_tag() }}
-    <div>
-        {{ form.task_title.label }}
-        {{ form.task_title() }}
+    <div class="form-group">
+        {{ form.task_title.label(class="form-label") }}
+        {{ form.task_title(class="form-control") }}
     </div>
-    <div>
-        {{ form.task_description.label }}
-        {{ form.task_description() }}
+    <div class="form-group">
+        {{ form.task_description.label(class="form-label") }}
+        {{ form.task_description(class="form-control") }}
     </div>
-    <div>
-        {{ form.status.label }}
-        {{ form.status() }}
+    <div class="form-group">
+        {{ form.status.label(class="form-label") }}
+        {{ form.status(class="form-control") }}
     </div>
-    <div>
-        {{ form.deadline.label }}
-        {{ form.deadline() }}
+    <div class="form-group">
+        {{ form.deadline.label(class="form-label") }}
+        {{ form.deadline(class="form-control") }}
     </div>
-    <div>
-        {{ form.executor.label }}
-        {{ form.executor() }}
+    <div class="form-group">
+        {{ form.executor.label(class="form-label") }}
+        {{ form.executor(class="form-control") }}
     </div>
-    <div>
-        {{ form.submit() }}
+    <div class="form-group">
+        {{ form.submit(class="btn btn-primary") }}
     </div>
 </form>
 
-<p><a href="{{ url_for('main.task', project_id=task.project.id, task_id=task.id) }}">Назад к задаче</a></p>
+<a href="{{ url_for('main.task', project_id=task.project.id, task_id=task.id) }}"><- Назад к задаче</a>
+</div>
 {% endblock %}

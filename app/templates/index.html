@@ -1,45 +1,45 @@
 {% extends 'base.html' %}
 
-{% block title %}
-Home Page
-{% endblock %}
-
 {% block content %}
 {{ super() }}
+{% for cat, msg in get_flashed_messages(True) %}
+<div class="flash {{cat}}">{{msg}}</div>
+{% endfor %}
 <h1>Главная страница</h1>
 <h2>Ваши проекты</h2>
-        <ul>
-            {% for project in projects %}
-                <li>
-                    <a href="/project/{{project.id}}">{{ project.project_name }}</a>
-                    <p>{{ project.project_description }}
-                    <ul>
-                        {% for u in project.team %}
-                            <li>{{ u.username }}</li>
-                        {% endfor %}
-                    </ul>
-                </li>
-            {% endfor %}
-        </ul>
-<p>
-    <a href="{{ url_for('main.create_project') }}">Создать новый проект</a>
-</p>
+
+<div class="projects-container">
+    <a href="{{ url_for('main.create_project') }}" class="project-block-add">
+    <div>
+        + Создать новый проект
+    </div></a>
+    {% for project in projects %}
+        <a href="/project/{{project.id}}" class="project-block">
+            <div>
+            <p class="project-name">{{ project.project_name }}</p>
+            <p class="project-status">{{ project.status.status_name }}</p>
+            <p class="project-team-lead">Тимлид: {{ project.team_lead.username }}</p>
+            </div>
+        </a>
+    {% endfor %}
+</div>
 
 {% if is_admin %}
 <h2>Все проекты</h2>
-    <ul>
-        {% for pr in all_projects %}
-            <li>
-                <a href="/project/{{pr.id}}">{{ pr.project_name }}</a>
-                <p>{{ pr.project_description }}</p>
-                <ul>
-                    {% for u in pr.team %}
-                        <li>{{ u.username }}</li>
-                    {% endfor %}
-                </ul>
-            </li>
-        {% endfor %}
-    </ul>
+<div class="projects-container">
+    <a href="{{ url_for('main.create_project') }}" class="project-block-add">
+        + Создать новый проект
+    </a>
+    {% for project in all_projects %}
+        <a href="/project/{{project.id}}" class="project-block">
+            <div>
+            <p class="project-name">{{ project.project_name }}</p>
+            <p class="project-status">{{ project.status.status_name }}</p>
+            <p class="project-team-lead">Тимлид: {{ project.team_lead.username }}</p>
+            </div>
+        </a>
+    {% endfor %}
+</div>
 {% endif %}
 
 {% endblock %}

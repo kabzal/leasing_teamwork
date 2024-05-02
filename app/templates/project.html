@@ -10,52 +10,67 @@
 <div class="flash {{cat}}">{{msg}}</div>
 {% endfor %}
 <h1>{{ proj.project_name }}</h1>
-<p><a href="{{ url_for('main.edit_project', project_id=proj.id) }}">Редактировать проект</a></p>
-<div>
-    {{ proj.project_description }}
-</div>
 
-<div>
+<div class="current-status">
     {{ proj.status.status_name }}
 </div>
 
-<div>
-    <p>
-        Тимлид: <a href="{{ url_for('auth.profile', user_id=proj.team_lead_id) }}">
-            {{ proj.team_lead.username }}
-        </a>, {{ proj.team_lead.role }}
-    </p>
+<p><a href="{{ url_for('main.edit_project', project_id=proj.id) }}">Редактировать проект</a></p>
+
+<div class="project-descr">
+    {{ proj.project_description }}
 </div>
 
+
+<h3>Тимлид</h3>
 <div>
-    <p>Команда: </p>
-    <ul>
-        {% for teammate in proj.team %}
-        <li><a href="{{ url_for('auth.profile', user_id=teammate.id) }}">{{ teammate.username }} - {{ teammate.role }}</a></li>
-        {% endfor %}
-    </ul>
+    <a href="{{ url_for('auth.profile', user_id=proj.team_lead_id) }}">
+        {{ proj.team_lead.username }}</a>,
+    {{ proj.team_lead.role[:20] }}
+    {% if proj.team_lead.role | length > 20 %}
+                ...
+    {% endif %},
+    <a href="{{ url_for('main.department_view', dept_id=proj.team_lead.department.id) }}">
+        {{proj.team_lead.department.department_name}}
+    </a>
 </div>
 
+<h3>Команда</h3>
 <div>
-    <p>Задачи: </p>
+<table class="table">
+    {% for teammate in proj.team %}
+        <tr>
+            <td><a href="{{ url_for('auth.profile', user_id=teammate.id) }}">{{ teammate.username }}</a></td>
+            <td>
+                {{ teammate.role[:20] }}
+                {% if teammate.role | length > 20 %}
+                ...
+                {% endif %}
+            </td>
+            <td><a href="{{ url_for('main.department_view', dept_id=proj.team_lead.department.id) }}">{{teammate.department.department_name}}  </a></td>
+        </tr>
+    {% endfor %}
+</table>
+</div>
+<h3>Задачи</h3>
+<div>
     {% if proj.project_tasks %}
-    <ul>
+    <table class="table">
+        <tr><td colspan="5"><a href="{{ url_for('main.add_task', project_id=proj.id) }}">+ Добавить задачу</a></td></tr>
         {% for task in proj.project_tasks %}
-        <li>
-            <a href="{{ url_for('main.task', project_id=proj.id, task_id=task.id) }}">
-                {{ task.task_title }} - {{ task.executor.username }} - {{ task.status.status_name }} - {{ task.deadline }}
-            </a>
-        </li>
+        <tr>
+            <td><a href="{{ url_for('main.task', project_id=proj.id, task_id=task.id) }}">{{ task.task_title }}</a></td>
+            <td><a href="{{ url_for('auth.profile', user_id=task.executor.id) }}">{{ task.executor.username }}</a></td>
+            <td>{{ task.status.status_name }}</td>
+            <td>{{ task.deadline.strftime('%d.%m.%Y') }}</td>
+            <td><a href="{{ url_for('main.edit_task', project_id=proj.id, task_id=task.id) }}">Редактировать</a></td>
+        </tr>
         {% endfor %}
-    </ul>
+    </table>
     {% else %}
     В настоящее время задачи не добавлены
+    <p><a href="{{ url_for('main.add_task', project_id=proj.id) }}">+ Добавить задачу</a></p>
     {% endif %}
 </div>
 
-<div>
-    <a href="{{ url_for('main.add_task', project_id=proj.id) }}">
-        Добавить задачу
-    </a>
-</div>
 {% endblock %}
