@@ -3,7 +3,7 @@ from flask_login import LoginManager, login_user, login_required, logout_user, c
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from app.models import User, Department, Status, Project, Task
-from app.forms import LoginForm, RegisterForm, UserEditForm, ObjCreateForm
+from app.forms import LoginForm, RegisterForm, UserEditForm, ObjCreateForm, PasswordChangeForm
 from config import Config
 
 admin = Blueprint('admin', __name__)
@@ -253,3 +253,43 @@ def edit_user(user_id: int):
                            form=form,
                            user=user_chosen,
                            is_admin=is_admin)
+
+
+@login_required
+@admin.route('/change-password-for-user/<int:user_id>', methods=["POST", "GET"])
+def change_password(user_id: int):
+    is_admin = (current_user.email == Config.ADMIN_EMAIL)
+    if not is_admin:
+        flash("🔒 Вносить изменения в данные о пользователях имеет право только администратор", "error")
+        return redirect(url_for("auth.profile", user_id=user_id))
+
+    user_chosen = app.db_session.query(User).filter(User.id == user_id).first()
+    if not user_chosen:
+        flash("⚠️ Пользователь не найден", "error")
+        return redirect(url_for("main.index"))
+
+    form = PasswordChangeForm()
+
+    if form.validate_on_submit():
+        try:
+            if check_password_hash(user_chosen.password, form.password.data):
+                flash("⚠️ Введенный вами пароль совпадает с уже назначенным", "error")
+            else:
+                hash = generate_password_hash(form.password.data)
+                print(form.password.data, form.password2.data)
+                user_chosen.password = hash
+                app.db_session.commit()
+                flash("✔️ Пароль успешно изменен", "success")
+                return redirect(url_for('auth.profile', user_id=user_id))
+
+        except Exception as e:
+            app.db_session.rollback()
+            flash("⚠️ Возникла ошибка при сохранении нового пароля в базу данных", "error")
+
+    return render_template('admin/change_password.html',
+                           form=form,
+                           user=user_chosen,
+                           is_admin=is_admin)
+
+
+

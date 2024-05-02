@@ -19,7 +19,10 @@
                 {% endif %}
             </ul>
             <ul class="usermenu">
-                <li>Пользователь: <a href="{{ url_for('auth.profile', user_id=current_user.id) }}">{{ current_user.username }}</a></li>
+                <li>
+                    Пользователь{% if is_admin %}<span class="red-text"> (админ)</span>{% endif %}:
+                    <a href="{{ url_for('auth.profile', user_id=current_user.id) }}">{{ current_user.username }}</a>
+                </li>
                 <li> | </li>
                 <li><a href="{{ url_for('auth.logout') }}">Выйти из профиля</a></li>
             </ul>

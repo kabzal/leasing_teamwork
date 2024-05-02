@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, current_app, flash
 from flask_login import current_user, login_required
+from sqlalchemy import asc
 
 from app.forms import ProjectForm, TaskForm, ProjectEditForm, TaskEditForm
 from app.models import Status, User, Project, Task, Department
@@ -32,10 +33,10 @@ def teardown_request(request):
 @main.route('/')
 def index():
     if current_user.is_authenticated:
-        projects = current_user.projects_participated
+        projects = sorted(current_user.projects_participated, key=lambda x: x.id)
         is_admin = (current_user.email == Config.ADMIN_EMAIL)
         if is_admin:
-            all_projects = app.db_session.query(Project).all()
+            all_projects = app.db_session.query(Project).order_by(asc(Project.id)).all()
         else:
             all_projects = None
         return render_template("index.html",

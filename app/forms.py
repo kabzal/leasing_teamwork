@@ -6,20 +6,20 @@ from .models import Department
 
 
 class LoginForm(FlaskForm):
-    email = StringField("Email: ", validators=[Email("Некорректный email"), ])
+    email = StringField("Email: ", validators=[Email("⚠️ Некорректный email"), ])
     password = PasswordField("Пароль: ", validators=[
         DataRequired(),
-        Length(min=4, max=100, message="Пароль должен быть от 4 до 100 символов")])
+        Length(min=4, max=100, message="⚠️ Пароль должен быть от 4 до 100 символов")])
     remember = BooleanField("Запомнить меня", default=False)
     submit = SubmitField("Войти")
 
 
 class RegisterForm(FlaskForm):
-    username = StringField("Имя: ", validators=[Length(min=4, max=100, message="Имя должно быть от 4 до 100 символов")])
-    email = StringField("Email: ", validators=[Email("Некорректный email"), ])
-    password = PasswordField("Пароль: ", validators=[DataRequired(), Length(min=4, max=100, message="Пароль должен быть от 4 до 100 символов")])
-    password2 = PasswordField("Повтор пароля: ", validators=[DataRequired(), EqualTo('password', message="Пароли должны совпадать")])
-    role = StringField("Должность/роль: ", validators=[Length(min=4, max=100, message="Роль должна быть от 4 до 100 символов")])
+    username = StringField("Имя: ", validators=[Length(min=4, max=100, message="⚠️ Имя должно быть от 4 до 100 символов")])
+    email = StringField("Email: ", validators=[Email("⚠️ Некорректный email"), ])
+    password = PasswordField("Пароль: ", validators=[DataRequired(), Length(min=4, max=100, message="⚠️ Пароль должен быть от 4 до 100 символов")])
+    password2 = PasswordField("Повтор пароля: ", validators=[DataRequired(), EqualTo('password', message="⚠️ Пароли должны совпадать")])
+    role = StringField("Должность/роль: ", validators=[Length(min=4, max=100, message="⚠️ Роль должна быть от 4 до 100 символов")])
     department = SelectField("Отдел: ", validators=[DataRequired()])
     submit = SubmitField("Регистрация")
 
@@ -29,9 +29,10 @@ class RegisterForm(FlaskForm):
 
 
 class UserEditForm(FlaskForm):
-    username = StringField("Имя: ", validators=[Length(min=4, max=100, message="Имя должно быть от 4 до 100 символов")])
-    email = StringField("Email: ", validators=[Email("Некорректный email"), ])
-    role = StringField("Должность/роль: ", validators=[Length(min=4, max=100, message="Роль должна быть от 4 до 100 символов")])
+    username = StringField("Имя: ", validators=[Length(min=4, max=100, message="⚠️ Имя должно быть от 4 до 100 символов")])
+    email = StringField("Email: ", validators=[Email("⚠️ Некорректный email"), ])
+    role = StringField("Должность/роль: ",
+                       validators=[Length(min=4, max=100, message="⚠️ Роль должна быть от 4 до 100 символов")])
     department = SelectField("Отдел: ", validators=[DataRequired()])
     submit = SubmitField("Сохранить изменения")
 
@@ -43,7 +44,7 @@ class UserEditForm(FlaskForm):
 class ProjectForm(FlaskForm):
     project_name = StringField("Название проекта: ", validators=[
         DataRequired(),
-        Length(min=4, max=100, message="Название должно быть от 4 до 100 символов")])
+        Length(min=4, max=100, message="⚠️ Название должно быть от 4 до 100 символов")])
     project_description = TextAreaField("Описание проекта: ")
     status = SelectField("Статус: ", validators=[DataRequired()])
     team = SelectMultipleField("Команда проекта: ")
@@ -58,7 +59,7 @@ class ProjectForm(FlaskForm):
 class ProjectEditForm(FlaskForm):
     project_name = StringField("Название проекта: ", validators=[
         DataRequired(),
-        Length(min=4, max=100, message="Название должно быть от 4 до 100 символов")])
+        Length(min=4, max=100, message="⚠️ Название должно быть от 4 до 100 символов")])
     project_description = TextAreaField("Описание проекта: ")
     status = SelectField("Статус: ", validators=[DataRequired()])
     team_lead = SelectField("Тимлид: ", validators=[DataRequired()])
@@ -75,7 +76,7 @@ class ProjectEditForm(FlaskForm):
 class TaskForm(FlaskForm):
     task_title = StringField("Заголовок: ", validators=[
         DataRequired(),
-        Length(min=4, max=200, message="Название должно быть от 4 до 100 символов")])
+        Length(min=4, max=200, message="⚠️ Название должно быть от 4 до 100 символов")])
     task_description = TextAreaField("Описание задания: ", validators=[DataRequired()])
     status = SelectField("Статус: ", validators=[DataRequired()])
     deadline = DateField("Срок исполнения: ", validators=[DataRequired()])
@@ -91,7 +92,7 @@ class TaskForm(FlaskForm):
 class TaskEditForm(FlaskForm):
     task_title = StringField("Заголовок: ", validators=[
         DataRequired(),
-        Length(min=4, max=200, message="Название должно быть от 4 до 100 символов")])
+        Length(min=4, max=200, message="⚠️ Название должно быть от 4 до 100 символов")])
     task_description = TextAreaField("Описание задания: ", validators=[DataRequired()])
     status = SelectField("Статус: ")
     deadline = DateField("Срок исполнения: ", default=None)
@@ -107,5 +108,15 @@ class TaskEditForm(FlaskForm):
 class ObjCreateForm(FlaskForm):
     obj_name = StringField("Наименование: ", validators=[
         DataRequired(),
-        Length(min=4, max=200, message="Название должно быть от 4 до 100 символов")])
+        Length(min=4, max=200, message="⚠️ Название должно быть от 4 до 100 символов")])
+    submit = SubmitField("Сохранить")
+
+
+class PasswordChangeForm(FlaskForm):
+    password = PasswordField("Пароль: ",
+                             validators=[DataRequired(),
+                                         Length(min=4, max=100, message="⚠️ Пароль должен быть от 4 до 100 символов")])
+    password2 = PasswordField("Повтор пароля: ",
+                              validators=[DataRequired(),
+                                          EqualTo('password', message="⚠️ Пароли должны совпадать")])
     submit = SubmitField("Сохранить")

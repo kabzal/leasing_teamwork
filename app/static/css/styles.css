@@ -212,11 +212,19 @@ button:hover, .btn:hover {
 
 .form-control {
   flex: 1;
-  padding: 8px; /* Поля ввода */
-  font-size: 13px; /* Размер шрифта */
+  padding: 8px;
+  font-size: 13px;
   font-family: 'RobotoMono-Regular';
-  border-radius: 4px; /* Скругленные углы */
-  border: 1px solid #ccc; /* Граница */
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+.text-danger {
+  width: 420px;
+  text-align: left;
+  padding: 8px;
+  border-top: 1px solid #ff6a00;
+  border-bottom: 1px solid #ff6a00;
 }
 
 .current-status {
@@ -256,8 +264,8 @@ button:hover, .btn:hover {
     color: #ccc;
     width: 75%;
     padding: 10px;
-    border-top: 1px solid #ccc;
-    border-bottom: 1px solid #ccc;
+    border-top: 1px solid #ff6a00;
+    border-bottom: 1px solid #ff6a00;
     margin-top: 10px;
 }
 

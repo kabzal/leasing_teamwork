@@ -21,26 +21,41 @@
             {{ form.task_title.label(class="form-label") }}
             {{ form.task_title(class="form-control") }}
         </div>
+        {% if form.task_title.errors %}
+            <div class="text-danger">{{ form.task_title.errors[0] }}</div>
+        {% endif %}
 
         <div class="form-group">
             {{ form.task_description.label(class="form-label") }}
             {{ form.task_description(class="form-control", rows=4) }}
         </div>
+        {% if form.task_description.errors %}
+            <div class="text-danger">{{ form.task_description.errors[0] }}</div>
+        {% endif %}
 
         <div class="form-group">
             {{ form.status.label(class="form-label") }}
             {{ form.status(class="form-control") }}
         </div>
+        {% if form.status.errors %}
+            <div class="text-danger">{{ form.status.errors[0] }}</div>
+        {% endif %}
 
         <div class="form-group">
             {{ form.deadline.label(class="form-label") }}
             {{ form.deadline(class="form-control", type="date") }}
         </div>
+        {% if form.deadline.errors %}
+            <div class="text-danger">{{ form.deadline.errors[0] }}</div>
+        {% endif %}
 
         <div class="form-group">
             {{ form.executor.label(class="form-label") }}
             {{ form.executor(class="form-control") }}
         </div>
+        {% if form.executor.errors %}
+            <div class="text-danger">{{ form.executor.errors[0] }}</div>
+        {% endif %}
 
         <div class="form-group">
             {{ form.submit(class="btn btn-primary") }}

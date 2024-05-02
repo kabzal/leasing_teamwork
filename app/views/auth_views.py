@@ -61,5 +61,3 @@ def profile(user_id):
                            user=user_chosen,
                            menu=mainmenu,
                            is_admin=is_admin)
-
-

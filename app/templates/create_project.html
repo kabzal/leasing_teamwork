@@ -22,21 +22,33 @@
       {{ form.project_name.label(class="form-label") }}
       {{ form.project_name(class="form-control") }}
     </div>
+    {% if form.project_name.errors %}
+      <div class="text-danger">{{ form.project_name.errors[0] }}</div>
+    {% endif %}
 
     <div class="form-group">
       {{ form.project_description.label(class="form-label") }}
       {{ form.project_description(class="form-control", rows=3) }}
     </div>
+    {% if form.project_description.errors %}
+      <div class="text-danger">{{ form.project_description.errors[0] }}</div>
+    {% endif %}
 
     <div class="form-group">
       {{ form.status.label(class="form-label") }}
       {{ form.status(class="form-control") }}
     </div>
+    {% if form.status.errors %}
+      <div class="text-danger">{{ form.status.errors[0] }}</div>
+    {% endif %}
 
     <div class="form-group">
       {{ form.team.label(class="form-label") }}
       {{ form.team(class="form-control", size=5, multiple=True) }}
     </div>
+    {% if form.team.errors %}
+      <div class="text-danger">{{ form.team.errors[0] }}</div>
+    {% endif %}
 
     <div class="form-group">
       {{ form.submit(class="btn btn-primary") }}

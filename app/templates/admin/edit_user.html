@@ -20,21 +20,33 @@
         {{ form.username.label(class="form-label") }}
         {{ form.username(class="form-control") }}
     </div>
+    {% if form.username.errors %}
+            <div class="text-danger">{{ form.username.errors[0] }}</div>
+    {% endif %}
     {% if user.id == current_user.id %}
-        <p><i>Внимание! Если вы хотите изменить email в вашем аккаунте, то убедитесь, что измените email администратора в конфигурации сайта, иначе ваш аккаунт потеряет доступ к правам администратора</i></p>
+        <p>⚠️ Внимание! Если вы хотите изменить email в вашем аккаунте, то <b>убедитесь, что измените email администратора в конфигурации сайта</b>, иначе ваш аккаунт потеряет доступ к правам администратора</p>
     {% endif %}
     <div class="form-group">
         {{ form.email.label(class="form-label") }}
         {{ form.email(class="form-control") }}
     </div>
+    {% if form.email.errors %}
+        <div class="text-danger">{{ form.email.errors[0] }}</div>
+    {% endif %}
     <div class="form-group">
         {{ form.role.label(class="form-label") }}
         {{ form.role(class="form-control") }}
     </div>
+    {% if form.role.errors %}
+            <div class="text-danger">{{ form.role.errors[0] }}</div>
+    {% endif %}
     <div class="form-group">
         {{ form.department.label(class="form-label") }}
         {{ form.department(class="form-control") }}
     </div>
+    {% if form.department.errors %}
+            <div class="text-danger">{{ form.department.errors[0] }}</div>
+    {% endif %}
     <div class="form-group">
         {{ form.submit(class="btn btn-primary") }}
     </div>
